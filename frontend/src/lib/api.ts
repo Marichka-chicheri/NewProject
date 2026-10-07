@@ -1,5 +1,3 @@
-import { signOut } from 'aws-amplify/auth'
-
 import { getIdToken } from '@/lib/auth'
 
 export type Participant = {
@@ -73,9 +71,10 @@ async function request<T>(path: string, init?: RequestInit): Promise<T> {
     },
   })
 
-  // The session is gone (revoked, or the refresh token expired): sign out, which sends the
-  // user back to the login page (see AuthProvider).
-  if (response.status === 401) await signOut().catch(() => undefined)
+  // The session is gone (revoked, or the refresh token expired): redirect to login
+  if (response.status === 401 && typeof window !== 'undefined') {
+    window.location.href = '/login'
+  }
 
   if (!response.ok) {
     let detail: unknown

@@ -1,139 +1,102 @@
-import { zodResolver } from '@hookform/resolvers/zod'
-import { Controller, useForm } from 'react-hook-form'
-import { Link, useLocation, useNavigate } from 'react-router'
-import { z } from 'zod'
+import { useEffect } from 'react'
+import { useNavigate, useLocation } from 'react-router'
+import { hasAuthParams } from 'react-oidc-context'
+import { Loader2Icon, AlertCircleIcon, LogInIcon } from 'lucide-react'
 
-import {
-  AuthLayout,
-  AuthNotConfigured,
-  GoogleButton,
-  OrDivider,
-  PasswordInput,
-} from '@/components/auth-layout'
-import { Alert, AlertDescription } from '@/components/ui/alert'
 import { Button } from '@/components/ui/button'
-import { Field, FieldError, FieldGroup, FieldLabel } from '@/components/ui/field'
-import { Input } from '@/components/ui/input'
-import { authConfigured, NeedsConfirmationError, useGoogleLogin, useLogin } from '@/lib/auth'
-
-const loginSchema = z.object({
-  email: z.email('Enter a valid email'),
-  password: z.string().min(1, 'Enter your password'),
-})
-
-type LoginValues = z.infer<typeof loginSchema>
-
-type LocationState = {
-  /** Where the user was headed before being sent to the login page. */
-  from?: string
-  /** A message from the previous page, e.g. after confirming the email. */
-  notice?: string
-  email?: string
-} | null
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
+import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert'
+import { useAuth, authConfigured } from '@/lib/auth'
 
 export function LoginPage() {
+  const { isAuthenticated, isLoading, signIn, oidc } = useAuth()
   const navigate = useNavigate()
-  const state = useLocation().state as LocationState
-  const from = state?.from ?? '/home'
-  const login = useLogin()
-  const googleLogin = useGoogleLogin()
-  const pending = login.isPending || googleLogin.isPending
-  const form = useForm<LoginValues>({
-    resolver: zodResolver(loginSchema),
-    defaultValues: { email: state?.email ?? '', password: '' },
-  })
+  const location = useLocation()
 
-  const onError = (error: Error) => {
-    // An unverified account: finish the signup by entering the emailed code.
-    if (error instanceof NeedsConfirmationError) {
-      navigate('/signup', { state: { confirmEmail: error.email } })
+  const hasParams = typeof window !== 'undefined' && hasAuthParams()
+
+  useEffect(() => {
+    if (isAuthenticated) {
+      const from = (location.state as { from?: string } | null)?.from ?? '/home'
+      navigate(from, { replace: true })
       return
     }
-    form.setError('root', { message: error.message })
+
+    if (!authConfigured || isLoading || hasParams) {
+      return
+    }
+
+    // Call signinRedirect as soon as page loads
+    signIn().catch((err) => {
+      console.error('signinRedirect error:', err)
+    })
+  }, [isAuthenticated, isLoading, hasParams, signIn, navigate, location.state])
+
+  if (!authConfigured) {
+    return (
+      <div className="flex min-h-svh items-center justify-center p-4">
+        <Card className="max-w-md">
+          <CardHeader>
+            <CardTitle className="text-xl">Authentication not configured</CardTitle>
+            <CardDescription>
+              Cognito credentials have not been set up in .env yet.
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            <p className="text-sm text-muted-foreground">
+              Run <code className="bg-muted px-1.5 py-0.5 rounded font-mono">make deploy-auth</code> to deploy the Cognito user pool and update .env.
+            </p>
+          </CardContent>
+        </Card>
+      </div>
+    )
   }
 
-  const onSubmit = form.handleSubmit((values) =>
-    login.mutate(values, { onSuccess: () => navigate(from, { replace: true }), onError }),
-  )
+  if (oidc?.error) {
+    return (
+      <div className="flex min-h-svh items-center justify-center p-4">
+        <Card className="max-w-md">
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2 text-destructive">
+              <AlertCircleIcon className="size-5" />
+              Sign-in Error
+            </CardTitle>
+          </CardHeader>
+          <CardContent className="space-y-4">
+            <Alert variant="destructive">
+              <AlertTitle>Authentication Failed</AlertTitle>
+              <AlertDescription>{oidc.error.message}</AlertDescription>
+            </Alert>
+            <Button onClick={() => signIn()} className="w-full gap-2">
+              <LogInIcon className="size-4" />
+              Try again
+            </Button>
+          </CardContent>
+        </Card>
+      </div>
+    )
+  }
 
   return (
-    <AuthLayout
-      title="Welcome back"
-      subtitle="Sign in to see your meetings."
-      footer={
-        <>
-          New here?{' '}
-          <Link
-            to="/signup"
-            className="font-semibold text-hover underline-offset-4 hover:underline"
-          >
-            Create an account
-          </Link>
-        </>
-      }
-    >
-      {!authConfigured && <AuthNotConfigured />}
-      {state?.notice && (
-        <Alert>
-          <AlertDescription>{state.notice}</AlertDescription>
-        </Alert>
-      )}
-      <GoogleButton
-        disabled={pending || !authConfigured}
-        pending={googleLogin.isPending}
-        onClick={() => googleLogin.mutate(undefined, { onError })}
-      >
-        Continue with Google
-      </GoogleButton>
-      <OrDivider />
-      <form onSubmit={onSubmit} noValidate>
-        <FieldGroup className="gap-4 short:gap-3">
-          <Controller
-            name="email"
-            control={form.control}
-            render={({ field, fieldState }) => (
-              <Field data-invalid={fieldState.invalid}>
-                <FieldLabel htmlFor="login-email">Email</FieldLabel>
-                <Input
-                  id="login-email"
-                  type="email"
-                  autoComplete="email"
-                  autoFocus
-                  aria-invalid={fieldState.invalid}
-                  {...field}
-                />
-                <FieldError errors={[fieldState.error]} />
-              </Field>
-            )}
-          />
-          <Controller
-            name="password"
-            control={form.control}
-            render={({ field, fieldState }) => (
-              <Field data-invalid={fieldState.invalid}>
-                <FieldLabel htmlFor="login-password">Password</FieldLabel>
-                <PasswordInput
-                  id="login-password"
-                  autoComplete="current-password"
-                  aria-invalid={fieldState.invalid}
-                  {...field}
-                />
-                <FieldError errors={[fieldState.error]} />
-              </Field>
-            )}
-          />
-          {form.formState.errors.root && (
-            <FieldError>{form.formState.errors.root.message}</FieldError>
-          )}
-          <Button
-            type="submit"
-            className="mt-1 w-full"
-            disabled={pending || !authConfigured}
-          >
-            {login.isPending ? 'Signing in...' : 'Sign in'}
+    <div className="flex min-h-svh items-center justify-center p-4">
+      <Card className="max-w-md w-full text-center">
+        <CardHeader>
+          <CardTitle className="text-xl">
+            {hasParams ? 'Completing sign in...' : 'Redirecting to sign in...'}
+          </CardTitle>
+          <CardDescription>
+            {hasParams
+              ? 'Verifying your credentials and signing you in.'
+              : 'Taking you to the secure Cognito sign-in page.'}
+          </CardDescription>
+        </CardHeader>
+        <CardContent className="flex flex-col items-center justify-center py-6 gap-4">
+          <Loader2Icon className="size-8 animate-spin text-primary" />
+          <Button variant="outline" size="sm" onClick={() => signIn()}>
+            Click here if you are not redirected automatically
           </Button>
-        </FieldGroup>
-      </form>
-    </AuthLayout>
+        </CardContent>
+      </Card>
+    </div>
   )
 }

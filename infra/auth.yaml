@@ -35,6 +35,9 @@ Resources:
     UpdateReplacePolicy: Retain
     Properties:
       UserPoolName: !Sub ${ProjectName}-users
+      UserPoolTier: ESSENTIALS
+      AdminCreateUserConfig:
+        AllowAdminCreateUserOnly: false
       # Users sign in with their email; Cognito emails a code to verify it.
       UsernameAttributes: [email]
       AutoVerifiedAttributes: [email]
@@ -75,12 +78,21 @@ Resources:
       UserPoolTags:
         PROJECT_NAME: !Ref ProjectName
 
-  # Hosted domain for the OAuth endpoints (needed for Google). Prefixes are global.
+  # Hosted domain for the OAuth endpoints (needed for Google and Managed Login). Prefixes are global.
   UserPoolDomain:
     Type: AWS::Cognito::UserPoolDomain
     Properties:
       UserPoolId: !Ref UserPool
       Domain: !Sub ${ProjectName}-${AWS::AccountId}
+      ManagedLoginVersion: 2
+
+  ManagedLoginBranding:
+    Type: AWS::Cognito::ManagedLoginBranding
+    DependsOn: UserPoolDomain
+    Properties:
+      UserPoolId: !Ref UserPool
+      ClientId: !Ref UserPoolClient
+      UseCognitoProvidedValues: true
 
   GoogleIdentityProvider:
     Type: AWS::Cognito::UserPoolIdentityProvider
@@ -123,13 +135,21 @@ Resources:
       AllowedOAuthFlowsUserPoolClient: true
       AllowedOAuthFlows: [code]
       AllowedOAuthScopes: [openid, email, profile]
-      # "<origin>/login" for every origin: join with "/login," and append the last "/login".
+      # Allow <origin>/login, <origin>/login/, and <origin>/ for every origin.
       CallbackURLs: !Split
         - ","
-        - !Join ["", [!Join ["/login,", !Ref AppUrls], "/login"]]
+        - !Join
+          - ","
+          - - !Join ["", [!Join ["/login,", !Ref AppUrls], "/login"]]
+            - !Join ["", [!Join ["/login/,", !Ref AppUrls], "/login/"]]
+            - !Join ["", [!Join ["/,", !Ref AppUrls], "/"]]
       LogoutURLs: !Split
         - ","
-        - !Join ["", [!Join ["/login,", !Ref AppUrls], "/login"]]
+        - !Join
+          - ","
+          - - !Join ["", [!Join ["/login,", !Ref AppUrls], "/login"]]
+            - !Join ["", [!Join ["/login/,", !Ref AppUrls], "/login/"]]
+            - !Join ["", [!Join ["/,", !Ref AppUrls], "/"]]
 
 Outputs:
   Region:

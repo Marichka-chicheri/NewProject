@@ -76,7 +76,10 @@ export function HomePage() {
             <span className="max-sm:hidden">Add meeting</span>
           </Button>
           {user && (
-            <div className="flex items-center gap-1">
+            <div className="flex items-center gap-2">
+              <span className="text-sm font-medium text-foreground max-sm:hidden">
+                {user.email}
+              </span>
               <Link
                 to="/profile"
                 className="flex size-8 items-center justify-center rounded-full bg-secondary text-sm font-semibold text-secondary-foreground transition-colors hover:bg-secondary/80 focus-visible:ring-3 focus-visible:ring-ring/50 focus-visible:outline-none"
@@ -87,12 +90,14 @@ export function HomePage() {
               </Link>
               <Button
                 variant="ghost"
-                size="icon-sm"
+                size="sm"
                 aria-label="Sign out"
                 title="Sign out"
                 onClick={signOut}
+                className="gap-1.5"
               >
-                <LogOutIcon />
+                <LogOutIcon className="size-4" />
+                <span className="max-sm:hidden">Sign out</span>
               </Button>
             </div>
           )}

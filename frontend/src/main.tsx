@@ -5,13 +5,8 @@ import { BrowserRouter } from 'react-router'
 
 import { Toaster } from '@/components/ui/sonner'
 import { AuthProvider } from '@/components/auth-provider'
-import { configureAuth } from '@/lib/auth'
 import App from './App.tsx'
 import './index.css'
-// Completes the Google (OAuth) redirect when the browser comes back to /login.
-import 'aws-amplify/auth/enable-oauth-listener'
-
-configureAuth()
 
 const queryClient = new QueryClient({
   defaultOptions: { queries: { retry: 1, refetchOnWindowFocus: false } },

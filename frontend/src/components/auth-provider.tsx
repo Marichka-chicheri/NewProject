@@ -1,41 +1,97 @@
 import { useQueryClient } from '@tanstack/react-query'
-import { Hub } from 'aws-amplify/utils'
-import { signOut as cognitoSignOut } from 'aws-amplify/auth'
-import { useEffect, useState, type ReactNode } from 'react'
+import { useEffect, type ReactNode } from 'react'
+import { AuthProvider as OidcAuthProvider, useAuth as useOidcAuth } from 'react-oidc-context'
 
-import { AuthContext, authConfigured, loadUser, type User } from '@/lib/auth'
+import {
+  AuthContext,
+  authConfig,
+  authConfigured,
+  getCognitoLogoutUrl,
+  oidcConfig,
+  setOidcUser,
+  type User,
+} from '@/lib/auth'
 
-export function AuthProvider({ children }: { children: ReactNode }) {
+function InnerAuthProvider({ children }: { children: ReactNode }) {
+  const oidc = useOidcAuth()
   const queryClient = useQueryClient()
-  const [user, setUser] = useState<User | null | undefined>(authConfigured ? undefined : null)
 
   useEffect(() => {
-    if (!authConfigured) return
-    let active = true
-    const refresh = () => loadUser().then((next) => active && setUser(next))
-    refresh()
-    // Keeps the state in step with Cognito: the Google redirect, sign-out in another place
-    // (e.g. a 401 from the API), or a refresh token that no longer works.
-    const stop = Hub.listen('auth', ({ payload }) => {
-      if (payload.event === 'signedIn' || payload.event === 'signInWithRedirect') refresh()
-      if (payload.event === 'signedOut' || payload.event === 'tokenRefresh_failure') {
-        setUser(null)
-        // The next user must not see this user's cached meetings.
-        queryClient.clear()
-      }
-    })
-    return () => {
-      active = false
-      stop()
-    }
-  }, [queryClient])
+    setOidcUser(oidc.user ?? null)
+  }, [oidc.user])
 
-  const signIn = (next: User) => setUser(next)
+  const user: User | null | undefined = oidc.isLoading
+    ? undefined
+    : oidc.user
+      ? {
+          name:
+            (oidc.user.profile.name as string) ||
+            (oidc.user.profile.email as string)?.split('@')[0] ||
+            'User',
+          email: (oidc.user.profile.email as string) || '',
+          provider:
+            oidc.user.profile.identities ||
+            (oidc.user.profile['cognito:username'] as string)?.toLowerCase().startsWith('google_')
+              ? 'google'
+              : 'password',
+        }
+      : null
+
   const signOut = async () => {
-    await cognitoSignOut()
-    setUser(null)
     queryClient.clear()
+    await oidc.removeUser()
+    setOidcUser(null)
+    if (authConfig.domain) {
+      window.location.href = getCognitoLogoutUrl()
+    } else {
+      window.location.href = '/login'
+    }
   }
 
-  return <AuthContext value={{ user, signIn, signOut }}>{children}</AuthContext>
+  const signIn = async () => {
+    await oidc.signinRedirect()
+  }
+
+  return (
+    <AuthContext.Provider
+      value={{
+        user,
+        isAuthenticated: oidc.isAuthenticated,
+        isLoading: oidc.isLoading,
+        signIn,
+        signOut,
+        oidc,
+      }}
+    >
+      {children}
+    </AuthContext.Provider>
+  )
+}
+
+function UnconfiguredAuthProvider({ children }: { children: ReactNode }) {
+  return (
+    <AuthContext.Provider
+      value={{
+        user: null,
+        isAuthenticated: false,
+        isLoading: false,
+        signIn: async () => {},
+        signOut: async () => {},
+      }}
+    >
+      {children}
+    </AuthContext.Provider>
+  )
+}
+
+export function AuthProvider({ children }: { children: ReactNode }) {
+  if (!authConfigured) {
+    return <UnconfiguredAuthProvider>{children}</UnconfiguredAuthProvider>
+  }
+
+  return (
+    <OidcAuthProvider {...oidcConfig}>
+      <InnerAuthProvider>{children}</InnerAuthProvider>
+    </OidcAuthProvider>
+  )
 }
