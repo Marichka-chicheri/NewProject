@@ -38,8 +38,16 @@ function InnerAuthProvider({ children }: { children: ReactNode }) {
       : null
 
   const signOut = async () => {
-    queryClient.clear()
-    await oidc.removeUser()
+    try {
+      queryClient.clear()
+    } catch {}
+    try {
+      await oidc.removeUser()
+    } catch {}
+    try {
+      sessionStorage.clear()
+      localStorage.clear()
+    } catch {}
     setOidcUser(null)
     if (authConfig.domain) {
       window.location.href = getCognitoLogoutUrl()

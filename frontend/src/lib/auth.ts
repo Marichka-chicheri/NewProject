@@ -39,7 +39,7 @@ export function getCognitoLogoutUrl(): string {
   if (domain && !domain.startsWith('http://') && !domain.startsWith('https://')) {
     domain = `https://${domain}`
   }
-  const logoutUri = encodeURIComponent(`${window.location.origin}/login`)
+  const logoutUri = `${window.location.origin}/login`
   return `${domain}/logout?client_id=${authConfig.clientId}&logout_uri=${logoutUri}`
 }
 
