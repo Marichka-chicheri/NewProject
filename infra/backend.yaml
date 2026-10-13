@@ -293,3 +293,13 @@ Outputs:
     Value: !GetAtt Database.Endpoint.Address
   LogGroup:
     Value: !Ref LogGroup
+  VpcId:
+    Value: !Ref Vpc
+  PrivateSubnets:
+    Value: !Sub ${PrivateSubnetA},${PrivateSubnetB}
+  PrivateSubnetA:
+    Value: !Ref PrivateSubnetA
+  PrivateSubnetB:
+    Value: !Ref PrivateSubnetB
+  FunctionSecurityGroup:
+    Value: !Ref FunctionSecurityGroup

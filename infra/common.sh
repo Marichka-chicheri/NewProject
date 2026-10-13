@@ -1,3 +1,6 @@
+# Prevent Git Bash on Windows from converting arguments starting with / into Windows paths
+export MSYS_NO_PATHCONV=1
+
 # Shared setup for the infra scripts: credentials and settings come from .env via make.
 : "${AWS_ACCESS_KEY_ID:?Set AWS_ACCESS_KEY_ID in .env}"
 : "${AWS_SECRET_ACCESS_KEY:?Set AWS_SECRET_ACCESS_KEY in .env}"
@@ -11,6 +14,7 @@ ECR_STACK="$PROJECT_NAME-ecr"
 BACKEND_STACK="$PROJECT_NAME-backend"
 FRONTEND_STACK="$PROJECT_NAME-frontend"
 AUTH_STACK="$PROJECT_NAME-auth"
+REPORTS_STACK="$PROJECT_NAME-reports"
 # CloudFront only accepts certificates from us-east-1.
 CERT_STACK="$PROJECT_NAME-certificate"
 CERT_REGION="us-east-1"
