@@ -12,6 +12,7 @@ from sqlalchemy import (
     Uuid,
     func,
 )
+from sqlalchemy.dialects.postgresql import JSONB
 from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column, relationship
 
 
@@ -73,6 +74,11 @@ class Meeting(Base):
         ForeignKey("users.id", ondelete="CASCADE"), index=True
     )
     created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), server_default=func.now())
+    # {"items": [...], "action_items": [...]} as validated by schemas.Agenda; None = no agenda yet.
+    agenda: Mapped[dict | None] = mapped_column(JSONB, nullable=True)
+    # What the agenda parser suggested before the user corrected and saved it, plus the model
+    # and prompt version that produced it. The difference to `agenda` is the quality signal.
+    ai_suggestion: Mapped[dict | None] = mapped_column(JSONB, nullable=True)
 
     participants: Mapped[list[Participant]] = relationship(
         secondary=meeting_participants,

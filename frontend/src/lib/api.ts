@@ -6,6 +6,43 @@ export type Participant = {
   email: string
 }
 
+export type AgendaItem = {
+  topic: string
+  owner: string | null
+  minutes: number | null
+}
+
+export type ActionItem = {
+  task: string
+  owner: string | null
+  /** YYYY-MM-DD */
+  due: string | null
+}
+
+export type Agenda = {
+  items: AgendaItem[]
+  action_items: ActionItem[]
+}
+
+/** What the agenda parser returns: an agenda plus what the text says about the meeting. */
+export type ParsedAgenda = Agenda & {
+  title: string | null
+  starts_at: string | null
+  duration_minutes: number | null
+  language: string
+}
+
+export type ParseResult = {
+  agenda: ParsedAgenda
+  model: string
+  prompt_version: string
+}
+
+export type AgendaSave = Agenda & {
+  /** The parser's suggestion, stored next to the saved agenda as a quality signal. */
+  ai_suggestion?: { agenda: ParsedAgenda; text: string; model: string; prompt_version: string }
+}
+
 export type Meeting = {
   id: string
   title: string
@@ -14,6 +51,7 @@ export type Meeting = {
   ends_at: string
   place: string
   participants: Participant[]
+  agenda: Agenda | null
   created_at: string
 }
 
@@ -97,6 +135,9 @@ export const api = {
   updateMeeting: ({ id, ...data }: MeetingCreate & { id: string }) =>
     request<Meeting>(`/meetings/${id}`, { method: 'PUT', body: JSON.stringify(data) }),
   deleteMeeting: (id: string) => request<void>(`/meetings/${id}`, { method: 'DELETE' }),
+  saveAgenda: ({ id, ...data }: AgendaSave & { id: string }) =>
+    request<Meeting>(`/meetings/${id}/agenda`, { method: 'POST', body: JSON.stringify(data) }),
+  deleteAgenda: (id: string) => request<Meeting>(`/meetings/${id}/agenda`, { method: 'DELETE' }),
   listParticipants: () => request<Participant[]>('/participants'),
   createParticipant: (data: ParticipantCreate) =>
     request<Participant>('/participants', { method: 'POST', body: JSON.stringify(data) }),

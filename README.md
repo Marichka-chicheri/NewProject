@@ -53,6 +53,25 @@ Everything is described with CloudFormation in [`infra/`](infra/) and deployed t
 
 Requires Docker, Node.js and the AWS CLI. `make infra-lint` checks the templates.
 
+### Paste an agenda (Claude on Amazon Bedrock)
+
+A meeting's agenda can be typed, or pasted as free text (an email, a chat message, notes) and
+parsed by Claude on Bedrock into a pre-filled form that the user checks and saves. The parser is a
+separate Lambda function **outside the VPC** (it needs no database), reusing the backend image;
+saving goes through the normal API. See [ADR 0006](docs/adr/0006-llm-agenda-parsing.md) and the
+[container diagram](docs/architecture/c4-container.md).
+
+1. Make sure Anthropic models are enabled for the account (Bedrock → Model catalog, `us-east-1`),
+   and that your IAM user may call `bedrock-mantle:CreateInference`.
+2. `make llm-hello` — the first call from the laptop; `make parse TEXT="..."` — the parser alone.
+3. `make deploy-backend` (new image + migration), `make deploy-ai` (parser, its function URL and a
+   5 USD/month AWS Budgets alarm to `BUDGET_EMAIL`), then `make deploy-frontend`, which builds the
+   frontend against the parser URL. CI redeploys the parser after every backend deploy once the
+   stack exists.
+4. The model is `PARSER_MODEL` in `.env`: `us.amazon.nova-lite-v1:0` (Amazon Nova, Converse API) by default,
+   `anthropic.claude-opus-5-5` for Claude (Messages API) once Anthropic models are enabled. Logs, one JSON
+   line per parse with tokens, latency and cost: `aws logs tail /<PROJECT_NAME>/agenda-parser`.
+
 ### Custom domain
 
 Once everything is deployed, set the domain in `.env` and attach it:

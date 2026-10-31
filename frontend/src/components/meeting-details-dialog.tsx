@@ -1,5 +1,14 @@
 import { useRef } from 'react'
-import { ClockIcon, MapPinIcon, PencilIcon, Trash2Icon, UsersIcon } from 'lucide-react'
+import { format } from 'date-fns'
+import {
+  ClockIcon,
+  ListChecksIcon,
+  MapPinIcon,
+  PencilIcon,
+  PlusIcon,
+  Trash2Icon,
+  UsersIcon,
+} from 'lucide-react'
 
 import { Button } from '@/components/ui/button'
 import {
@@ -12,9 +21,77 @@ import {
 } from '@/components/ui/dialog'
 import type { Meeting } from '@/lib/api'
 import { formatWhen } from '@/lib/format'
+import { parserEnabled } from '@/lib/parser'
 
 function isUrl(value: string): boolean {
   return /^https?:\/\/\S+$/.test(value)
+}
+
+function AgendaSection({ meeting, onAgenda }: { meeting: Meeting; onAgenda: () => void }) {
+  const { agenda } = meeting
+  return (
+    <div className="flex flex-col gap-3">
+      <div className="flex items-center justify-between gap-2">
+        <h3 className="flex items-center gap-2 text-lg">
+          <ListChecksIcon className="size-4" />
+          Agenda
+        </h3>
+        <Button variant="outline" size="sm" onClick={onAgenda}>
+          {agenda ? <PencilIcon /> : <PlusIcon />}
+          {agenda ? 'Edit agenda' : 'Add agenda'}
+        </Button>
+      </div>
+      {!agenda ? (
+        <p className="text-muted-foreground">
+          No agenda yet.{parserEnabled && ' Type one, or paste it from an email or a chat.'}
+        </p>
+      ) : (
+        <>
+          {agenda.items.length > 0 && (
+            <ol className="flex list-decimal flex-col gap-1.5 pl-5">
+              {agenda.items.map((item, i) => (
+                <li key={i}>
+                  <span className="font-semibold">{item.topic}</span>
+                  {(item.owner || item.minutes) && (
+                    <span className="text-sm text-muted-foreground">
+                      {' — '}
+                      {[item.owner, item.minutes && `${item.minutes} min`]
+                        .filter(Boolean)
+                        .join(' · ')}
+                    </span>
+                  )}
+                </li>
+              ))}
+            </ol>
+          )}
+          {agenda.action_items.length > 0 && (
+            <div className="flex flex-col gap-1.5">
+              <h4 className="text-sm font-semibold text-muted-foreground">Action items</h4>
+              <ul className="flex list-disc flex-col gap-1.5 pl-5">
+                {agenda.action_items.map((action, i) => (
+                  <li key={i}>
+                    {action.task}
+                    {(action.owner || action.due) && (
+                      <span className="text-sm text-muted-foreground">
+                        {' — '}
+                        {[
+                          action.owner,
+                          action.due &&
+                            `due ${format(new Date(`${action.due}T00:00`), 'EEE d MMM')}`,
+                        ]
+                          .filter(Boolean)
+                          .join(' · ')}
+                      </span>
+                    )}
+                  </li>
+                ))}
+              </ul>
+            </div>
+          )}
+        </>
+      )}
+    </div>
+  )
 }
 
 type Props = {
@@ -23,9 +100,17 @@ type Props = {
   onOpenChange: (open: boolean) => void
   onEdit: (meeting: Meeting) => void
   onDelete: (meeting: Meeting) => void
+  onAgenda: (meeting: Meeting) => void
 }
 
-export function MeetingDetailsDialog({ meeting, open, onOpenChange, onEdit, onDelete }: Props) {
+export function MeetingDetailsDialog({
+  meeting,
+  open,
+  onOpenChange,
+  onEdit,
+  onDelete,
+  onAgenda,
+}: Props) {
   const editButtonRef = useRef<HTMLButtonElement>(null)
 
   return (
@@ -73,6 +158,9 @@ export function MeetingDetailsDialog({ meeting, open, onOpenChange, onEdit, onDe
                   </p>
                 </>
               )}
+
+              <div className="hairline" />
+              <AgendaSection meeting={meeting} onAgenda={() => onAgenda(meeting)} />
 
               <div className="hairline" />
               <div className="flex flex-col gap-3">

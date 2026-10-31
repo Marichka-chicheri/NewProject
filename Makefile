@@ -8,7 +8,7 @@ s ?=
 .DEFAULT_GOAL := help
 .PHONY: help env build up down restart logs ps migrate migration seed psql test lint format \
 	dev-backend dev-frontend install clean deploy deploy-auth deploy-backend deploy-frontend destroy-auth destroy-backend destroy-frontend add-domain remove-domain infra-lint \
-	deploy-reports destroy-reports report-now
+	deploy-reports destroy-reports report-now deploy-ai destroy-ai llm-hello llm-models parse
 
 help: ## Show this help
 	@grep -hE '^[a-zA-Z_-]+:.*?## ' $(firstword $(MAKEFILE_LIST)) | \
@@ -81,7 +81,8 @@ AWS_ENV := MSYS_NO_PATHCONV=1 AWS_ACCESS_KEY_ID="$(AWS_ACCESS_KEY_ID)" AWS_SECRE
 	PROJECT_NAME="$(or $(PROJECT_NAME),$(APP_NAME))" CORS_ORIGINS_AWS="$(CORS_ORIGINS_AWS)" \
 	LAMBDA_MEMORY="$(LAMBDA_MEMORY)" DOMAIN_NAME="$(DOMAIN_NAME)" HOSTED_ZONE_ID="$(HOSTED_ZONE_ID)" \
 	GOOGLE_CLIENT_ID="$(GOOGLE_CLIENT_ID)" GOOGLE_CLIENT_SECRET="$(GOOGLE_CLIENT_SECRET)" \
-	REPORTS_SENDER_EMAIL="$(REPORTS_SENDER_EMAIL)" REPORTS_RECIPIENT_EMAIL="$(REPORTS_RECIPIENT_EMAIL)"
+	REPORTS_SENDER_EMAIL="$(REPORTS_SENDER_EMAIL)" REPORTS_RECIPIENT_EMAIL="$(REPORTS_RECIPIENT_EMAIL)" \
+	PARSER_MODEL="$(or $(PARSER_MODEL),us.amazon.nova-lite-v1:0)" BUDGET_EMAIL="$(BUDGET_EMAIL)"
 
 deploy: deploy-backend deploy-frontend ## Deploy the whole app to AWS (after make deploy-auth)
 
@@ -106,6 +107,24 @@ report-now: env ## Request a report on demand: make report-now [WEEK=2026-W39]
 		payload="$$(python3 -c '\''import json, sys; print(json.dumps({"week": sys.argv[1] if sys.argv[1] else None, "source": "cli"}))'\'' "$$week_val")"; \
 		aws sqs send-message --queue-url "$$queue_url" --message-body "$$payload"; \
 		echo "Sent report request for week: $${week_val:-<previous week>}"'
+
+deploy-ai: env ## Deploy the agenda parser (Lambda + function URL) and the 5 USD budget alarm (after deploy-backend)
+	@$(AWS_ENV) ./infra/deploy-ai.sh
+
+destroy-ai: env ## Delete the agenda parser stack and the budget alarm
+	@$(AWS_ENV) ./infra/destroy-ai.sh
+
+llm-models: env ## List the Claude model IDs this AWS account can call on Bedrock
+	@cd backend && $(AWS_ENV) uv run python -m app.ai.hello --models
+
+llm-hello: env ## First Bedrock call from the laptop: prints the answer, stop_reason and usage
+	@cd backend && $(AWS_ENV) uv run python -m app.ai.hello
+
+# The text goes through the environment, so quotes and apostrophes in it survive the shell.
+export TEXT
+parse: env ## Parse an agenda from the laptop: make parse TEXT="Пн 10:00, синк по прайсингу..."
+	@test -n "$$TEXT" || (echo 'Usage: make parse TEXT="..."' && exit 1)
+	@cd backend && $(AWS_ENV) uv run python -m app.ai.agenda "$$TEXT"
 
 add-domain: env ## Attach DOMAIN_NAME from .env to the deployed frontend
 	@$(AWS_ENV) ./infra/add-domain.sh

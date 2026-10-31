@@ -4,6 +4,7 @@ import { LogOutIcon, PlusIcon } from 'lucide-react'
 import { Link } from 'react-router'
 
 import { DateNavigation, ViewSwitcher } from '@/components/calendar-toolbar'
+import { AgendaDialog } from '@/components/agenda-dialog'
 import { DeleteMeetingDialog } from '@/components/delete-meeting-dialog'
 import { MeetingDetailsDialog } from '@/components/meeting-details-dialog'
 import { MeetingFormDialog } from '@/components/meeting-form-dialog'
@@ -28,6 +29,7 @@ export function HomePage() {
   const [detailsOpen, setDetailsOpen] = useState(false)
   const [viewedId, setViewedId] = useState<string | null>(null)
   const [meetingToDelete, setMeetingToDelete] = useState<Meeting | null>(null)
+  const [agendaOpen, setAgendaOpen] = useState(false)
 
   // Look the meeting up in the list so the details stay fresh after an edit.
   const viewedMeeting = meetings.data?.find((m) => m.id === viewedId) ?? null
@@ -45,6 +47,16 @@ export function HomePage() {
   const openDetails = (meeting: Meeting) => {
     setViewedId(meeting.id)
     setDetailsOpen(true)
+  }
+  // The agenda dialog replaces the details; closing it goes back to them, with the new agenda.
+  const openAgenda = (meeting: Meeting) => {
+    setViewedId(meeting.id)
+    setDetailsOpen(false)
+    setAgendaOpen(true)
+  }
+  const closeAgenda = (open: boolean) => {
+    setAgendaOpen(open)
+    if (!open) setDetailsOpen(true)
   }
   const openDelete = (meeting: Meeting) => {
     setDetailsOpen(false)
@@ -130,7 +142,9 @@ export function HomePage() {
         onOpenChange={setDetailsOpen}
         onEdit={openEdit}
         onDelete={openDelete}
+        onAgenda={openAgenda}
       />
+      <AgendaDialog meeting={viewedMeeting} open={agendaOpen} onOpenChange={closeAgenda} />
       <DeleteMeetingDialog meeting={meetingToDelete} onClose={() => setMeetingToDelete(null)} />
     </div>
   )

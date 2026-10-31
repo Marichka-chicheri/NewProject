@@ -1,0 +1,185 @@
+AWSTemplateFormatVersion: "2010-09-09"
+Description: >-
+  Meetings app - Paste an agenda (Lab 6). The agenda-parser Lambda function runs outside the VPC
+  (it needs no database), reuses the backend's container image with another handler, and calls
+  Claude on Amazon Bedrock over the internet: no NAT gateway, no VPC endpoint, nothing to pay
+  while nobody uses it. Its function URL is public but the handler requires a Cognito ID
+  token. The model is Amazon Nova (Converse API) or Claude (Messages API), chosen by
+  ParserModel. Also a monthly AWS Budgets alarm for the whole account.
+
+Parameters:
+  ProjectName:
+    Type: String
+    Default: meetings
+    AllowedPattern: "[a-z][a-z0-9-]*"
+  ImageUri:
+    Type: String
+    Description: The backend's container image (the one deployed on the backend function).
+  ParserModel:
+    Type: String
+    Default: us.amazon.nova-lite-v1:0
+    Description: >-
+      Bedrock model ID the parser calls (configuration, not code): anthropic.* through the
+      Messages API, anything else (Amazon Nova) through the Converse API.
+  CognitoUserPoolId:
+    Type: String
+    Description: User pool whose ID tokens the parser accepts (output of the auth stack).
+  CognitoClientId:
+    Type: String
+    Description: App client the tokens must be issued to (output of the auth stack).
+  CorsOrigins:
+    Type: CommaDelimitedList
+    Default: http://localhost:5173
+    Description: Sites allowed to call the parser from the browser.
+  BudgetEmail:
+    Type: String
+    Description: Where the budget alarm is sent.
+  BudgetLimitUsd:
+    Type: Number
+    Default: 5
+
+Resources:
+  ParserLogGroup:
+    Type: AWS::Logs::LogGroup
+    Properties:
+      LogGroupName: !Sub /${ProjectName}/agenda-parser
+      RetentionInDays: 14
+      Tags:
+        - Key: PROJECT_NAME
+          Value: !Ref ProjectName
+
+  ParserRole:
+    Type: AWS::IAM::Role
+    Properties:
+      AssumeRolePolicyDocument:
+        Version: "2012-10-17"
+        Statement:
+          - Effect: Allow
+            Principal: { Service: lambda.amazonaws.com }
+            Action: sts:AssumeRole
+      ManagedPolicyArns:
+        # CloudWatch Logs only: no VPC, no database, no S3.
+        - arn:aws:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole
+      Policies:
+        - PolicyName: CallClaudeOnBedrock
+          PolicyDocument:
+            Version: "2012-10-17"
+            Statement:
+              # The Anthropic Messages API on Bedrock (bedrock-mantle). "*" for now; see the
+              # discussion in docs/adr/0006-llm-agenda-parsing.md on narrowing it.
+              - Effect: Allow
+                Action: bedrock-mantle:CreateInference
+                Resource: "*"
+              # Amazon Nova through the Converse API. A us.* inference profile may route the
+              # call to us-east-1, us-east-2 or us-west-2, so the model ARNs of all three apply.
+              - Effect: Allow
+                Action: bedrock:InvokeModel
+                Resource:
+                  - !Sub arn:aws:bedrock:${AWS::Region}:${AWS::AccountId}:inference-profile/*
+                  - arn:aws:bedrock:*::foundation-model/*
+      Tags:
+        - Key: PROJECT_NAME
+          Value: !Ref ProjectName
+
+  ParserFunction:
+    Type: AWS::Lambda::Function
+    Properties:
+      FunctionName: !Sub ${ProjectName}-agenda-parser
+      Description: Paste an agenda - pasted text in, agenda JSON out (Claude on Bedrock)
+      PackageType: Image
+      Code:
+        ImageUri: !Ref ImageUri
+      ImageConfig:
+        Command:
+          - app.ai.agenda_lambda.handler
+      Architectures: [arm64]
+      MemorySize: 512
+      Timeout: 30
+      Role: !GetAtt ParserRole.Arn
+      # No VpcConfig: the function reaches Bedrock and Cognito over the internet.
+      LoggingConfig:
+        LogGroup: !Ref ParserLogGroup
+      Environment:
+        Variables:
+          PARSER_MODEL: !Ref ParserModel
+          PARSER_MAX_CHARS: "10000"
+          COGNITO_USER_POOL_ID: !Ref CognitoUserPoolId
+          COGNITO_CLIENT_ID: !Ref CognitoClientId
+          # Same as the report builder: the handler runs its own runtime loop, not uvicorn.
+          AWS_LWA_ASYNC_INIT: "false"
+      Tags:
+        - Key: PROJECT_NAME
+          Value: !Ref ProjectName
+
+  ParserFunctionUrl:
+    Type: AWS::Lambda::Url
+    Properties:
+      TargetFunctionArn: !GetAtt ParserFunction.Arn
+      AuthType: NONE
+      # The function URL answers the browser's preflight and adds the CORS headers itself.
+      Cors:
+        AllowOrigins: !Ref CorsOrigins
+        AllowMethods: [POST]
+        AllowHeaders: [authorization, content-type]
+        MaxAge: 3600
+
+  # Public, as the API in Lab 4: both permissions are needed. The handler checks the token.
+  ParserUrlPermission:
+    Type: AWS::Lambda::Permission
+    Properties:
+      FunctionName: !Ref ParserFunction
+      Action: lambda:InvokeFunctionUrl
+      Principal: "*"
+      FunctionUrlAuthType: NONE
+
+  ParserInvokePermission:
+    Type: AWS::Lambda::Permission
+    Properties:
+      FunctionName: !Ref ParserFunction
+      Action: lambda:InvokeFunction
+      Principal: "*"
+      InvokedViaFunctionUrl: true
+
+  # The cheapest insurance in the course: an email when the month's bill passes the limit
+  # (actual) or is forecast to (forecasted). It covers the whole account, not only this stack.
+  MonthlyBudget:
+    Type: AWS::Budgets::Budget
+    Properties:
+      Budget:
+        BudgetName: !Sub ${ProjectName}-monthly
+        BudgetType: COST
+        TimeUnit: MONTHLY
+        BudgetLimit:
+          Amount: !Ref BudgetLimitUsd
+          Unit: USD
+      NotificationsWithSubscribers:
+        - Notification:
+            NotificationType: ACTUAL
+            ComparisonOperator: GREATER_THAN
+            Threshold: 100
+            ThresholdType: PERCENTAGE
+          Subscribers:
+            - SubscriptionType: EMAIL
+              Address: !Ref BudgetEmail
+        - Notification:
+            NotificationType: FORECASTED
+            ComparisonOperator: GREATER_THAN
+            Threshold: 100
+            ThresholdType: PERCENTAGE
+          Subscribers:
+            - SubscriptionType: EMAIL
+              Address: !Ref BudgetEmail
+      ResourceTags:
+        - Key: PROJECT_NAME
+          Value: !Ref ProjectName
+
+Outputs:
+  ParserUrl:
+    Description: Function URL of the agenda parser, without the trailing slash
+    Value: !Sub
+      - https://${Domain}
+      - Domain: !Select [2, !Split ["/", !GetAtt ParserFunctionUrl.FunctionUrl]]
+  ParserFunctionName:
+    Value: !Ref ParserFunction
+  ParserLogGroup:
+    Value: !Ref ParserLogGroup

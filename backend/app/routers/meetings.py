@@ -1,4 +1,5 @@
 import uuid
+from datetime import UTC, datetime
 
 from fastapi import APIRouter, HTTPException, Response, status
 from sqlalchemy import select
@@ -8,7 +9,7 @@ from sqlalchemy.orm import selectinload
 from app.auth import CurrentUser
 from app.db import SessionDep
 from app.models import Meeting, Participant, User
-from app.schemas import MeetingCreate, MeetingRead
+from app.schemas import AgendaSave, MeetingCreate, MeetingRead
 
 router = APIRouter(prefix="/meetings", tags=["meetings"])
 
@@ -85,6 +86,33 @@ async def update_meeting(
     meeting.starts_at = payload.starts_at
     meeting.ends_at = payload.ends_at
     meeting.place = payload.place
+    await session.commit()
+    session.expunge(meeting)
+    return await _get_meeting(session, meeting_id, user)
+
+
+@router.post("/{meeting_id}/agenda", response_model=MeetingRead)
+async def save_agenda(
+    meeting_id: uuid.UUID, payload: AgendaSave, session: SessionDep, user: CurrentUser
+) -> Meeting:
+    """Replaces the meeting's agenda. Typed by hand or pre-filled by the agenda parser: either
+    way it is validated here, and only here is it written. The parser itself never writes."""
+    meeting = await _get_meeting(session, meeting_id, user)
+    meeting.agenda = payload.model_dump(mode="json", include={"items", "action_items"})
+    if payload.ai_suggestion is not None:
+        meeting.ai_suggestion = {
+            **payload.ai_suggestion.model_dump(mode="json"),
+            "saved_at": datetime.now(UTC).isoformat(),
+        }
+    await session.commit()
+    session.expunge(meeting)
+    return await _get_meeting(session, meeting_id, user)
+
+
+@router.delete("/{meeting_id}/agenda", response_model=MeetingRead)
+async def delete_agenda(meeting_id: uuid.UUID, session: SessionDep, user: CurrentUser) -> Meeting:
+    meeting = await _get_meeting(session, meeting_id, user)
+    meeting.agenda = None
     await session.commit()
     session.expunge(meeting)
     return await _get_meeting(session, meeting_id, user)
