@@ -41,6 +41,8 @@ Parameters:
 Resources:
   ParserLogGroup:
     Type: AWS::Logs::LogGroup
+    DeletionPolicy: Retain
+    UpdateReplacePolicy: Retain
     Properties:
       LogGroupName: !Sub /${ProjectName}/agenda-parser
       RetentionInDays: 14
@@ -50,6 +52,8 @@ Resources:
 
   ParserRole:
     Type: AWS::IAM::Role
+    DeletionPolicy: Retain
+    UpdateReplacePolicy: Retain
     Properties:
       AssumeRolePolicyDocument:
         Version: "2012-10-17"
@@ -83,6 +87,8 @@ Resources:
 
   ParserFunction:
     Type: AWS::Lambda::Function
+    DeletionPolicy: Retain
+    UpdateReplacePolicy: Retain
     Properties:
       FunctionName: !Sub ${ProjectName}-agenda-parser
       Description: Paste an agenda - pasted text in, agenda JSON out (Claude on Bedrock)
@@ -113,6 +119,8 @@ Resources:
 
   ParserFunctionUrl:
     Type: AWS::Lambda::Url
+    DeletionPolicy: Retain
+    UpdateReplacePolicy: Retain
     Properties:
       TargetFunctionArn: !GetAtt ParserFunction.Arn
       AuthType: NONE
@@ -144,6 +152,8 @@ Resources:
   # (actual) or is forecast to (forecasted). It covers the whole account, not only this stack.
   MonthlyBudget:
     Type: AWS::Budgets::Budget
+    DeletionPolicy: Retain
+    UpdateReplacePolicy: Retain
     Properties:
       Budget:
         BudgetName: !Sub ${ProjectName}-monthly

@@ -76,7 +76,7 @@ main() {
 
   echo "==> [3/3] Allow https://$domain to call the API ($BACKEND_STACK)"
   update_backend_cors
-  update_auth_urls
+  remind_app_urls
 
   echo
   if [ -z "$zone" ]; then

@@ -66,7 +66,7 @@ no agreement, through the provider-neutral **Converse API** (`bedrock-runtime`).
 - The provider is chosen by the model ID: `anthropic.*` goes through the Messages API, anything
   else through Converse. Same system prompt, same `record_agenda` tool (its schema with `$ref`s
   inlined), same validation and single retry, same log line. Switching back to Claude is one line
-  in `.env` (`PARSER_MODEL=anthropic.claude-opus-5-5`) and `make deploy-ai`.
+  (`parser_model = "anthropic.claude-opus-5-5"` in `infra/terraform.tfvars` since Lab 7, applied by HCP Terraform; it was `PARSER_MODEL` in `.env` and `make deploy-ai` before).
 - Converse gives what Part 1 of the lab promised: change `modelId`, keep the code. The price is
   the lowest common denominator: no `effort`, provider-specific features arrive later or never.
 - The role also gets `bedrock:InvokeModel` on Nova's inference profile and foundation models.

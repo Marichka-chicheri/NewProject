@@ -42,16 +42,16 @@ make dev-frontend   # Vite on :5173, proxies /api to :8000
 
 ## Deploy to AWS
 
-Everything is described with CloudFormation in [`infra/`](infra/) and deployed to `us-east-1` by default (`AWS_REGION` in `.env`):
+The application is deployed with CloudFormation and shell scripts in [`infra/`](infra/) to `us-east-1` by default (`AWS_REGION` in `.env`); Cognito, the weekly report and the agenda parser are Terraform, see [Infrastructure as code](#infrastructure-as-code-terraform):
 
 - **Backend** (`make deploy-backend`): the backend container on AWS Lambda (via [Lambda Web Adapter](https://github.com/awslabs/aws-lambda-web-adapter), so the FastAPI app runs unchanged), exposed through a public **Lambda function URL**, and its PostgreSQL 17 database on **Aurora Serverless v2 scaling between 0 and 1 ACU**. After 5 idle minutes the database pauses and costs only storage; the first request after that waits about 15 seconds while it resumes. The function runs in the database's private subnets; there is no NAT gateway, load balancer or public IP.
 - **Frontend** (`make deploy-frontend`): the app, built with `VITE_API_URL` set to the function URL, in a private S3 bucket behind CloudFront on **pay-as-you-go** pricing (no flat-rate plan; `PriceClass_100`). The browser calls the function URL directly; the deploy adds the CloudFront address to the backend's CORS origins.
 
-1. Put the credentials of an IAM user into `.env` (`AWS_ACCESS_KEY_ID`, `AWS_SECRET_ACCESS_KEY`, `AWS_REGION`; see `.env.example` for the optional settings). `.env` is gitignored.
+1. Put the credentials of an IAM user into `.env` (`AWS_ACCESS_KEY_ID`, `AWS_SECRET_ACCESS_KEY`, `AWS_REGION`; see `.env.example` for the optional settings), and the Cognito IDs from `make infra-output` (`COGNITO_*`). `.env` is gitignored.
 2. `make deploy` (backend, then frontend). It prints the app and API URLs. The first run takes about 20 minutes (database and CloudFront distribution); later runs take a few minutes. Deploy the two parts separately with `make deploy-backend` / `make deploy-frontend`.
 3. `make destroy-frontend` and `make destroy-backend` delete everything except a final database snapshot.
 
-Requires Docker, Node.js and the AWS CLI. `make infra-lint` checks the templates.
+Requires Docker, Node.js and the AWS CLI (and the Terraform CLI for `make infra-plan`). `make infra-lint` checks the templates and the Terraform formatting.
 
 ### Paste an agenda (Claude on Amazon Bedrock)
 
@@ -64,13 +64,23 @@ saving goes through the normal API. See [ADR 0006](docs/adr/0006-llm-agenda-pars
 1. Make sure Anthropic models are enabled for the account (Bedrock → Model catalog, `us-east-1`),
    and that your IAM user may call `bedrock-mantle:CreateInference`.
 2. `make llm-hello` — the first call from the laptop; `make parse TEXT="..."` — the parser alone.
-3. `make deploy-backend` (new image + migration), `make deploy-ai` (parser, its function URL and a
-   5 USD/month AWS Budgets alarm to `BUDGET_EMAIL`), then `make deploy-frontend`, which builds the
-   frontend against the parser URL. CI redeploys the parser after every backend deploy once the
-   stack exists.
-4. The model is `PARSER_MODEL` in `.env`: `us.amazon.nova-lite-v1:0` (Amazon Nova, Converse API) by default,
+3. The parser, its function URL and a 5 USD/month AWS Budgets alarm are Terraform (`infra/ai.tf`):
+   merge to `main` and HCP Terraform applies them. `make deploy-backend` (new image + migration)
+   also moves the parser to the new image; `make deploy-frontend` builds the frontend against the
+   parser URL.
+4. The deployed model is `parser_model` in `infra/terraform.tfvars` (`PARSER_MODEL` in `.env` for `make parse` from the laptop): `us.amazon.nova-lite-v1:0` (Amazon Nova, Converse API) by default,
    `anthropic.claude-opus-5-5` for Claude (Messages API) once Anthropic models are enabled. Logs, one JSON
    line per parse with tokens, latency and cost: `aws logs tail /<PROJECT_NAME>/agenda-parser`.
+
+### Infrastructure as code (Terraform)
+
+Cognito ([`auth.tf`](infra/auth.tf)), the weekly report ([`reports.tf`](infra/reports.tf)) and the agenda parser with its budget alarm ([`ai.tf`](infra/ai.tf)) are Terraform, one root module in [`infra/`](infra/). The backend, the database and the frontend are still CloudFormation; Terraform reads the backend stack's outputs. See [ADR 0007](docs/adr/0007-terraform.md) for the why, and [the migration runbook](docs/lab7-migration.md) for how the existing resources were adopted.
+
+- **Who applies:** HCP Terraform (workspace `new-project-dev`, connected to this repository, working directory `infra`), with short-lived AWS credentials from an OIDC role. Nobody applies from a laptop and the Makefile has no `terraform apply`.
+- **How to change it:** edit `infra/*.tf`, open a pull request, read the plan in the check, merge. HCP Terraform applies after the merge.
+- **From the laptop (read-only):** `terraform login` once, then `make infra-init`, `make infra-fmt`, `make infra-validate`, `make infra-plan` (a speculative plan, nothing applied), `make infra-output`.
+- **Variables:** non-secret values in [`infra/terraform.tfvars`](infra/terraform.tfvars); the Google client secret is a sensitive variable of the workspace. After the frontend gets a new address (`make deploy-frontend`, `make add-domain`), add it to `app_urls`.
+- **Two roads:** GitHub Actions deploys the application (`make deploy-backend` also moves the report builder and the parser to the new image), HCP Terraform deploys the infrastructure. When a change needs both, merge the Terraform pull request first.
 
 ### Custom domain
 
@@ -96,5 +106,5 @@ Every AWS resource that supports tags is tagged `PROJECT_NAME=<PROJECT_NAME>` (i
 ```
 backend/    FastAPI app (app/), Alembic migrations (alembic/), tests (tests/)
 frontend/   Vite + React + shadcn/ui (src/components/ui is generated by shadcn)
-infra/      CloudFormation templates and deploy scripts for AWS
+infra/      Terraform (Cognito, reports, agenda parser), CloudFormation templates and deploy scripts (backend, frontend)
 ```

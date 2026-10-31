@@ -7,3 +7,12 @@ node_modules/
 dist/
 .idea/
 .DS_Store
+
+# Terraform: commit .terraform.lock.hcl (it pins the provider versions), never the state
+.terraform/
+*.tfstate
+*.tfstate.*
+*.tfplan
+tfplan
+crash.log
+infra/generated.tf

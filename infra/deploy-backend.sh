@@ -9,7 +9,7 @@ main() {
   cd "$(dirname "$0")/.."
   source infra/common.sh
 
-  require_auth_stack
+  require_auth_settings
   LAMBDA_MEMORY="${LAMBDA_MEMORY:-512}"
   PASSWORD_PARAM="/$PROJECT_NAME/db-password"
 
@@ -58,10 +58,10 @@ main() {
   fi
 
   echo "==> [4/5] Lambda + database ($BACKEND_STACK)"
-  pool_id="$(output "$AUTH_STACK" UserPoolId)"
-  client_id="$(output "$AUTH_STACK" UserPoolClientId)"
+  pool_id="$COGNITO_USER_POOL_ID"
+  client_id="$COGNITO_CLIENT_ID"
   # The function has no internet access, so it gets the token signing keys up front.
-  jwks="$(curl -fsS "$(output "$AUTH_STACK" Issuer)/.well-known/jwks.json" \
+  jwks="$(curl -fsS "$(cognito_issuer)/.well-known/jwks.json" \
     | python3 -c 'import json, sys; print(json.dumps(json.load(sys.stdin), separators=(",", ":")))')"
   echo "    Cognito: $pool_id (client $client_id)"
   # Includes the frontend's addresses once it is deployed, so a redeploy keeps them.

@@ -53,6 +53,8 @@ Resources:
   # ------------------------------------------------------------- S3 Storage
   S3Endpoint:
     Type: AWS::EC2::VPCEndpoint
+    DeletionPolicy: Retain
+    UpdateReplacePolicy: Retain
     Properties:
       VpcId: !Ref VpcId
       ServiceName: !Sub com.amazonaws.${AWS::Region}.s3
@@ -64,6 +66,8 @@ Resources:
 
   ReportsBucket:
     Type: AWS::S3::Bucket
+    DeletionPolicy: Retain
+    UpdateReplacePolicy: Retain
     DependsOn: ReportMailerPermission
     Properties:
       BucketName: !Sub ${ProjectName}-reports-${AWS::AccountId}
@@ -90,6 +94,8 @@ Resources:
   # ------------------------------------------------------------- SQS & DLQ
   ReportRequestsDLQ:
     Type: AWS::SQS::Queue
+    DeletionPolicy: Retain
+    UpdateReplacePolicy: Retain
     Properties:
       QueueName: !Sub ${ProjectName}-report-requests-dlq
       MessageRetentionPeriod: 1209600 # 14 days
@@ -99,6 +105,8 @@ Resources:
 
   ReportRequestsQueue:
     Type: AWS::SQS::Queue
+    DeletionPolicy: Retain
+    UpdateReplacePolicy: Retain
     Properties:
       QueueName: !Sub ${ProjectName}-report-requests
       # At least 6x builder timeout (6 * 60s = 360s)
@@ -113,6 +121,8 @@ Resources:
   # -------------------------------------------------- EventBridge Scheduler
   SchedulerRole:
     Type: AWS::IAM::Role
+    DeletionPolicy: Retain
+    UpdateReplacePolicy: Retain
     Properties:
       AssumeRolePolicyDocument:
         Version: "2012-10-17"
@@ -135,6 +145,8 @@ Resources:
 
   WeeklyReportSchedule:
     Type: AWS::Scheduler::Schedule
+    DeletionPolicy: Retain
+    UpdateReplacePolicy: Retain
     Properties:
       Name: !Sub ${ProjectName}-weekly-report
       ScheduleExpression: !Ref ScheduleCron
@@ -149,6 +161,8 @@ Resources:
   # -------------------------------------------------- Report Builder Lambda
   ReportBuilderLogGroup:
     Type: AWS::Logs::LogGroup
+    DeletionPolicy: Retain
+    UpdateReplacePolicy: Retain
     Properties:
       LogGroupName: !Sub /${ProjectName}/report-builder
       RetentionInDays: 7
@@ -158,6 +172,8 @@ Resources:
 
   ReportBuilderRole:
     Type: AWS::IAM::Role
+    DeletionPolicy: Retain
+    UpdateReplacePolicy: Retain
     Properties:
       AssumeRolePolicyDocument:
         Version: "2012-10-17"
@@ -189,6 +205,8 @@ Resources:
 
   ReportBuilderFunction:
     Type: AWS::Lambda::Function
+    DeletionPolicy: Retain
+    UpdateReplacePolicy: Retain
     Properties:
       FunctionName: !Sub ${ProjectName}-report-builder
       PackageType: Image
@@ -219,6 +237,8 @@ Resources:
 
   ReportBuilderEventSource:
     Type: AWS::Lambda::EventSourceMapping
+    DeletionPolicy: Retain
+    UpdateReplacePolicy: Retain
     Properties:
       EventSourceArn: !GetAtt ReportRequestsQueue.Arn
       FunctionName: !GetAtt ReportBuilderFunction.Arn
@@ -228,6 +248,8 @@ Resources:
   # --------------------------------------------------- Report Mailer Lambda
   ReportMailerLogGroup:
     Type: AWS::Logs::LogGroup
+    DeletionPolicy: Retain
+    UpdateReplacePolicy: Retain
     Properties:
       LogGroupName: !Sub /${ProjectName}/report-mailer
       RetentionInDays: 7
@@ -237,6 +259,8 @@ Resources:
 
   ReportMailerRole:
     Type: AWS::IAM::Role
+    DeletionPolicy: Retain
+    UpdateReplacePolicy: Retain
     Properties:
       AssumeRolePolicyDocument:
         Version: "2012-10-17"
@@ -267,6 +291,8 @@ Resources:
 
   ReportMailerFunction:
     Type: AWS::Lambda::Function
+    DeletionPolicy: Retain
+    UpdateReplacePolicy: Retain
     Properties:
       FunctionName: !Sub ${ProjectName}-report-mailer
       Runtime: python3.12

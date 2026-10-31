@@ -29,6 +29,14 @@ jobs:
           uv sync --locked
           uv run ruff check .
 
+      - uses: hashicorp/setup-terraform@v3
+        with:
+          terraform_version: "~1.13.0"
+          terraform_wrapper: false
+
+      - name: Terraform fmt
+        run: terraform -chdir=infra fmt -check -recursive
+
       - uses: actions/setup-node@v5
         with:
           node-version: 24
@@ -78,18 +86,9 @@ jobs:
       - name: Deploy Backend
         run: make deploy-backend
 
-      # The parser runs the backend's image, so it must follow every backend deploy. Its first
-      # deploy is done from the laptop (make deploy-ai); from then on CI keeps it current.
-      - name: Deploy agenda parser
-        run: |
-          if aws cloudformation describe-stacks --region us-east-1 --stack-name new-project-ai >/dev/null 2>&1; then
-            make deploy-ai
-          else
-            echo "new-project-ai not deployed yet; run make deploy-ai once from the laptop"
-          fi
-        env:
-          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+      # make deploy-backend also moves the report builder and the agenda parser to the new image
+      # (infra/update-lambdas.sh). Cognito, reports and the parser themselves are Terraform:
+      # HCP Terraform applies infra/ after a merge, it is not part of this job.
 
       - name: Deploy Frontend
         run: make deploy-frontend
