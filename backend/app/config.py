@@ -1,13 +1,23 @@
 from typing import Annotated
 
-from pydantic import field_validator
+from pydantic import field_validator, model_validator
 from pydantic_settings import BaseSettings, NoDecode, SettingsConfigDict
+from sqlalchemy.engine import URL
 
 
 class Settings(BaseSettings):
     model_config = SettingsConfigDict(env_file=".env", extra="ignore")
 
     database_url: str = "postgresql+asyncpg://meetings:meetings@localhost:5432/meetings"
+    # Cloud Run (gcp/): the instance connection name (project:region:instance) and the parts of
+    # the URL. Cloud Run mounts the instance's Unix socket under /cloudsql and passes the password
+    # from Secret Manager as DB_PASSWORD, so DATABASE_URL is built here instead of stored anywhere.
+    cloud_sql_instance: str = ""
+    # Azure (azure/): host of the Database for PostgreSQL server, reached over TLS.
+    db_host: str = ""
+    db_user: str = "meetings"
+    db_name: str = "meetings"
+    db_password: str = ""
     # Lambda serves one request per instance at a time, so it runs with a pool of 1.
     db_pool_size: int = 5
     db_max_overflow: int = 10
@@ -35,6 +45,28 @@ class Settings(BaseSettings):
     def empty_means_default(cls, value: object, info) -> object:
         # make passes unset .env values as empty strings.
         return value or cls.model_fields[info.field_name].default
+
+    @model_validator(mode="after")
+    def cloud_sql_url(self) -> Settings:
+        if self.cloud_sql_instance:
+            self.database_url = URL.create(
+                "postgresql+asyncpg",
+                username=self.db_user,
+                password=self.db_password,
+                database=self.db_name,
+                query={"host": f"/cloudsql/{self.cloud_sql_instance}"},
+            ).render_as_string(hide_password=False)
+        elif self.db_host:
+            self.database_url = URL.create(
+                "postgresql+asyncpg",
+                username=self.db_user,
+                password=self.db_password,
+                host=self.db_host,
+                port=5432,
+                database=self.db_name,
+                query={"ssl": "require"},
+            ).render_as_string(hide_password=False)
+        return self
 
     @field_validator("cors_origins", mode="before")
     @classmethod
