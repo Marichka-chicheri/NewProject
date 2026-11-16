@@ -76,6 +76,9 @@ jobs:
           sed -i "s|^AWS_ACCESS_KEY_ID=.*|AWS_ACCESS_KEY_ID=${AWS_KEY}|" .env
           sed -i "s|^AWS_SECRET_ACCESS_KEY=.*|AWS_SECRET_ACCESS_KEY=${AWS_SECRET}|" .env
           sed -i "s|^AWS_REGION=.*|AWS_REGION=us-east-1|" .env
+          # The key (secrets above) belongs to new-project-deployer; CloudFormation builds with
+          # this role (infra/bootstrap/deployer.tf). Not a secret: an ARN grants nothing by itself.
+          sed -i "s|^CFN_ROLE_ARN=.*|CFN_ROLE_ARN=arn:aws:iam::274394226432:role/new-project-cfn-deployer|" .env
           sed -i "s|^PROJECT_NAME=.*|PROJECT_NAME=new-project|" .env
           sed -i "s|^DOMAIN_NAME=.*|DOMAIN_NAME=app.mary-meetings.online|" .env
           sed -i "s|^COGNITO_USER_POOL_ID=.*|COGNITO_USER_POOL_ID=us-east-1_ZFOrr7yex|" .env

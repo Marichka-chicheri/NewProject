@@ -8,6 +8,21 @@ export MSYS_NO_PATHCONV=1
 export AWS_DEFAULT_REGION="$AWS_REGION" AWS_PAGER=""
 [ -n "${AWS_SESSION_TOKEN:-}" ] || unset AWS_SESSION_TOKEN
 
+# CFN_ROLE_ARN (from infra/bootstrap, output cfn_role_arn): CloudFormation creates and deletes
+# the stack's resources with this role, so the deploy key itself needs only iam:PassRole on it
+# (infra/bootstrap/policies/deployer-user.json.tftpl). Empty keeps the old behaviour: the
+# stack uses the caller's own permissions. Once a stack was deployed with a role, CloudFormation
+# remembers it and uses it for later updates and deletes too.
+if [ -n "${CFN_ROLE_ARN:-}" ]; then
+  aws() {
+    if [ "${1:-}" = cloudformation ] && { [ "${2:-}" = deploy ] || [ "${2:-}" = delete-stack ]; }; then
+      command aws "$@" --role-arn "$CFN_ROLE_ARN"
+    else
+      command aws "$@"
+    fi
+  }
+fi
+
 # APP_NAME is the old name of the setting and still works.
 PROJECT_NAME="${PROJECT_NAME:-${APP_NAME:-meetings}}"
 ECR_STACK="$PROJECT_NAME-ecr"
