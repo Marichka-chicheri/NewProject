@@ -1,0 +1,85 @@
+waiting for the crawler...
+{
+    "Status": "SUCCEEDED",
+    "LogGroup": "/aws-glue/crawlers",
+    "LogStream": "lab8-payments-crawler",
+    "MessagePrefix": "b0bd5ff4-1940-470a-a079-9a7664fc1387",
+    "StartTime": 1794083137.0
+}
+table: lab8_crawler.payments
+{
+    "columns": [
+        {
+            "Name": "invoiceid",
+            "Type": "string"
+        },
+        {
+            "Name": "amount",
+            "Type": "int"
+        },
+        {
+            "Name": "ccy",
+            "Type": "int"
+        },
+        {
+            "Name": "reference",
+            "Type": "string"
+        },
+        {
+            "Name": "createddate",
+            "Type": "string"
+        },
+        {
+            "Name": "merchantid",
+            "Type": "string"
+        },
+        {
+            "Name": "merchantname",
+            "Type": "string"
+        },
+        {
+            "Name": "mcc",
+            "Type": "int"
+        },
+        {
+            "Name": "customerid",
+            "Type": "string"
+        },
+        {
+            "Name": "paymentmethod",
+            "Type": "string"
+        },
+        {
+            "Name": "device",
+            "Type": "string"
+        },
+        {
+            "Name": "status",
+            "Type": "string"
+        },
+        {
+            "Name": "modifieddate",
+            "Type": "string"
+        },
+        {
+            "Name": "finalamount",
+            "Type": "int"
+        },
+        {
+            "Name": "receivedat",
+            "Type": "string"
+        },
+        {
+            "Name": "failurereason",
+            "Type": "string"
+        }
+    ],
+    "partitions": [
+        {
+            "Name": "dt",
+            "Type": "string"
+        }
+    ],
+    "serde": "org.openx.data.jsonserde.JsonSerDe",
+    "classification": "json"
+}

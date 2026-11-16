@@ -1,0 +1,28 @@
+window  method      lateness120  lateness0
+08:01   card          1/18 =  6%      1/17 =  6%
+08:02   qr            0/2  =  0%      0/1  =  0%
+08:04   card          3/23 = 13%      3/22 = 14%
+08:07   card          1/25 =  4%      1/24 =  4%
+08:19   apple_pay     1/11 =  9%      1/10 = 10%
+08:23   apple_pay     0/6  =  0%      0/5  =  0%
+08:23   card          3/29 = 10%      3/28 = 11%
+08:34   card          1/18 =  6%      0/17 =  0%
+08:36   card          2/14 = 14%      2/13 = 15%
+08:44   apple_pay     1/11 =  9%      1/10 = 10%
+08:46   apple_pay     0/8  =  0%      0/7  =  0%
+08:49   google_pay    0/10 =  0%      0/8  =  0%
+08:52   apple_pay     1/7  = 14%      0/6  =  0%
+08:52   card          0/12 =  0%      0/11 =  0%
+08:53   card          1/20 =  5%      1/19 =  5%
+08:59   card          0/20 =  0%      0/18 =  0%
+09:01   qr            0/4  =  0%      0/3  =  0%
+09:04   apple_pay     1/8  = 12%      1/7  = 14%
+09:04   google_pay    1/6  = 17%      1/5  = 20%
+09:07   card          1/16 =  6%      1/15 =  7%
+09:10   google_pay    1/9  = 11%      1/8  = 12%
+09:11   apple_pay     0/10 =  0%      0/9  =  0%
+09:11   card          0/12 =  0%      0/11 =  0%
+09:12   card          1/12 =  8%      1/11 =  9%
+09:14   apple_pay     0/7  =  0%      0/5  =  0%
+
+common windows 123, cells changed 45 of 422, outcomes missing with lateness 0: 50 (of which failures 2)

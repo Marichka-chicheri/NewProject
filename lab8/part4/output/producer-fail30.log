@@ -1,0 +1,5 @@
+forced 6243 payments to fail
+sent 2000/6000 events (61 ev/s), receivedAt=2026-10-01T12:17:37Z
+sent 4000/6000 events (61 ev/s), receivedAt=2026-10-01T12:34:40Z
+sent 6000/6000 events (61 ev/s), receivedAt=2026-10-01T12:51:57Z
+done: 6000 events in 99 s, 151 PutRecords calls, 0 records retried

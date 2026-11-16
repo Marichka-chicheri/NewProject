@@ -1,0 +1,283 @@
+[fail30] assigned partitions [0, 1, 2]
+[fail30] window 07:59  card 1/1=100%
+[fail30] ALERT 08:00 card: failure 47.1% (8/17) > 10%
+[fail30] window 08:00  apple_pay 1/8=12%  card 8/17=47%  google_pay 0/2=0%  qr 0/1=0%
+[fail30] ALERT 08:01 card: failure 22.2% (4/18) > 10%
+[fail30] window 08:01  apple_pay 0/7=0%  card 4/18=22%  google_pay 2/7=29%
+[fail30] ALERT 08:02 card: failure 61.5% (8/13) > 10%
+[fail30] window 08:02  apple_pay 2/7=29%  card 8/13=62%  google_pay 2/6=33%  qr 1/2=50%
+[fail30] ALERT 08:03 apple_pay: failure 41.7% (5/12) > 10%
+[fail30] ALERT 08:03 card: failure 27.3% (3/11) > 10%
+[fail30] window 08:03  apple_pay 5/12=42%  card 3/11=27%  google_pay 2/6=33%  qr 0/1=0%
+[fail30] ALERT 08:04 card: failure 30.4% (7/23) > 10%
+[fail30] window 08:04  apple_pay 3/9=33%  card 7/23=30%  google_pay 2/9=22%  qr 0/1=0%
+[fail30] ALERT 08:05 apple_pay: failure 20.0% (2/10) > 10%
+[fail30] ALERT 08:05 card: failure 36.0% (9/25) > 10%
+[fail30] window 08:05  apple_pay 2/10=20%  card 9/25=36%  google_pay 1/4=25%
+[fail30] ALERT 08:06 card: failure 35.7% (5/14) > 10%
+[fail30] window 08:06  apple_pay 3/7=43%  card 5/14=36%  google_pay 0/5=0%  qr 0/2=0%
+[fail30] ALERT 08:07 card: failure 36.0% (9/25) > 10%
+[fail30] window 08:07  apple_pay 0/11=0%  card 9/25=36%  google_pay 1/4=25%  qr 0/3=0%
+[fail30] ALERT 08:08 google_pay: failure 30.0% (3/10) > 10%
+[fail30] window 08:08  apple_pay 4/9=44%  card 3/9=33%  google_pay 3/10=30%  qr 0/1=0%
+[fail30] ALERT 08:09 card: failure 50.0% (9/18) > 10%
+[fail30] window 08:09  apple_pay 1/4=25%  card 9/18=50%  google_pay 1/2=50%
+[fail30] ALERT 08:10 card: failure 20.0% (4/20) > 10%
+[fail30] window 08:10  apple_pay 1/12=8%  card 4/20=20%  google_pay 1/4=25%
+[fail30] ALERT 08:11 apple_pay: failure 30.0% (3/10) > 10%
+[fail30] ALERT 08:11 card: failure 29.2% (7/24) > 10%
+[fail30] window 08:11  apple_pay 3/10=30%  card 7/24=29%  google_pay 3/7=43%  qr 1/1=100%
+[fail30] ALERT 08:12 card: failure 40.0% (10/25) > 10%
+[fail30] window 08:12  apple_pay 2/7=29%  card 10/25=40%  google_pay 0/3=0%  qr 1/3=33%
+[fail30] ALERT 08:13 card: failure 26.1% (6/23) > 10%
+[fail30] window 08:13  apple_pay 3/9=33%  card 6/23=26%  google_pay 3/8=38%  qr 1/1=100%
+[fail30] ALERT 08:14 card: failure 38.5% (5/13) > 10%
+[fail30] window 08:14  apple_pay 1/8=12%  card 5/13=38%  google_pay 2/6=33%  qr 1/2=50%
+[fail30] ALERT 08:15 card: failure 40.0% (8/20) > 10%
+[fail30] window 08:15  apple_pay 0/8=0%  card 8/20=40%  google_pay 0/4=0%  qr 0/1=0%
+[fail30] ALERT 08:16 apple_pay: failure 33.3% (4/12) > 10%
+[fail30] ALERT 08:16 card: failure 41.2% (7/17) > 10%
+[fail30] window 08:16  apple_pay 4/12=33%  card 7/17=41%  google_pay 1/5=20%  qr 0/1=0%
+[fail30] ALERT 08:17 card: failure 33.3% (5/15) > 10%
+[fail30] window 08:17  apple_pay 3/8=38%  card 5/15=33%  google_pay 0/4=0%  qr 2/2=100%
+[fail30] ALERT 08:18 card: failure 28.6% (8/28) > 10%
+[fail30] window 08:18  apple_pay 1/6=17%  card 8/28=29%  google_pay 6/6=100%
+[fail30] ALERT 08:19 apple_pay: failure 18.2% (2/11) > 10%
+[fail30] ALERT 08:19 card: failure 35.7% (5/14) > 10%
+[fail30] window 08:19  apple_pay 2/11=18%  card 5/14=36%  google_pay 3/5=60%
+[fail30] ALERT 08:20 apple_pay: failure 25.0% (3/12) > 10%
+[fail30] ALERT 08:20 card: failure 16.7% (2/12) > 10%
+[fail30] window 08:20  apple_pay 3/12=25%  card 2/12=17%  google_pay 0/5=0%  qr 0/1=0%
+[fail30] ALERT 08:21 card: failure 11.8% (2/17) > 10%
+[fail30] window 08:21  apple_pay 2/9=22%  card 2/17=12%  google_pay 1/4=25%
+[fail30] ALERT 08:22 card: failure 36.4% (8/22) > 10%
+[fail30] ALERT 08:22 google_pay: failure 50.0% (5/10) > 10%
+[fail30] window 08:22  apple_pay 3/9=33%  card 8/22=36%  google_pay 5/10=50%
+[fail30] ALERT 08:23 card: failure 41.4% (12/29) > 10%
+[fail30] window 08:23  apple_pay 3/6=50%  card 12/29=41%  google_pay 4/7=57%  qr 1/1=100%
+[fail30] ALERT 08:24 card: failure 31.6% (6/19) > 10%
+[fail30] window 08:24  apple_pay 2/5=40%  card 6/19=32%  google_pay 2/7=29%
+[fail30] ALERT 08:25 apple_pay: failure 50.0% (5/10) > 10%
+[fail30] ALERT 08:25 card: failure 13.0% (3/23) > 10%
+[fail30] window 08:25  apple_pay 5/10=50%  card 3/23=13%  google_pay 1/4=25%  qr 0/1=0%
+[fail30] ALERT 08:26 card: failure 30.8% (4/13) > 10%
+[fail30] window 08:26  apple_pay 4/8=50%  card 4/13=31%  google_pay 3/9=33%
+[fail30] ALERT 08:27 apple_pay: failure 41.7% (5/12) > 10%
+[fail30] ALERT 08:27 card: failure 43.5% (10/23) > 10%
+[fail30] window 08:27  apple_pay 5/12=42%  card 10/23=43%  google_pay 1/6=17%
+[fail30] ALERT 08:28 apple_pay: failure 54.5% (6/11) > 10%
+[fail30] window 08:28  apple_pay 6/11=55%  card 1/16=6%  google_pay 0/4=0%
+[fail30] ALERT 08:29 apple_pay: failure 20.0% (2/10) > 10%
+[fail30] ALERT 08:29 card: failure 41.2% (7/17) > 10%
+[fail30] window 08:29  apple_pay 2/10=20%  card 7/17=41%  google_pay 0/4=0%
+[fail30] ALERT 08:30 apple_pay: failure 50.0% (6/12) > 10%
+[fail30] ALERT 08:30 google_pay: failure 40.0% (4/10) > 10%
+[fail30] window 08:30  apple_pay 6/12=50%  card 2/6=33%  google_pay 4/10=40%
+[fail30] ALERT 08:31 card: failure 52.6% (10/19) > 10%
+[fail30] window 08:31  apple_pay 3/9=33%  card 10/19=53%  google_pay 2/5=40%  qr 1/1=100%
+[fail30] ALERT 08:32 card: failure 13.3% (2/15) > 10%
+[fail30] window 08:32  apple_pay 2/5=40%  card 2/15=13%  google_pay 3/7=43%
+[fail30] ALERT 08:33 card: failure 54.5% (6/11) > 10%
+[fail30] window 08:33  apple_pay 1/7=14%  card 6/11=55%  google_pay 2/7=29%
+[fail30] ALERT 08:34 card: failure 33.3% (6/18) > 10%
+[fail30] window 08:34  apple_pay 4/8=50%  card 6/18=33%  google_pay 2/5=40%
+[fail30] ALERT 08:35 card: failure 44.4% (8/18) > 10%
+[fail30] window 08:35  apple_pay 3/6=50%  card 8/18=44%  google_pay 2/6=33%  qr 1/1=100%
+[fail30] ALERT 08:36 card: failure 21.4% (3/14) > 10%
+[fail30] ALERT 08:36 google_pay: failure 57.1% (8/14) > 10%
+[fail30] window 08:36  apple_pay 1/6=17%  card 3/14=21%  google_pay 8/14=57%  qr 0/1=0%
+[fail30] ALERT 08:37 card: failure 42.9% (9/21) > 10%
+[fail30] window 08:37  apple_pay 3/7=43%  card 9/21=43%  google_pay 4/9=44%  qr 0/2=0%
+[fail30] ALERT 08:38 apple_pay: failure 45.5% (5/11) > 10%
+[fail30] ALERT 08:38 card: failure 25.0% (5/20) > 10%
+[fail30] window 08:38  apple_pay 5/11=45%  card 5/20=25%  google_pay 3/9=33%  qr 1/1=100%
+[fail30] ALERT 08:39 apple_pay: failure 46.2% (6/13) > 10%
+[fail30] ALERT 08:39 card: failure 26.1% (6/23) > 10%
+[fail30] window 08:39  apple_pay 6/13=46%  card 6/23=26%  google_pay 1/2=50%
+[fail30] ALERT 08:40 card: failure 37.5% (9/24) > 10%
+[fail30] window 08:40  apple_pay 2/3=67%  card 9/24=38%  google_pay 1/4=25%  qr 0/1=0%
+[fail30] ALERT 08:41 card: failure 23.1% (3/13) > 10%
+[fail30] window 08:41  apple_pay 3/6=50%  card 3/13=23%  google_pay 0/4=0%
+[fail30] ALERT 08:42 card: failure 33.3% (7/21) > 10%
+[fail30] window 08:42  apple_pay 3/6=50%  card 7/21=33%  google_pay 1/4=25%  qr 0/1=0%
+[fail30] ALERT 08:43 apple_pay: failure 20.0% (2/10) > 10%
+[fail30] ALERT 08:43 card: failure 20.0% (5/25) > 10%
+[fail30] window 08:43  apple_pay 2/10=20%  card 5/25=20%  google_pay 2/9=22%  qr 0/2=0%
+[fail30] ALERT 08:44 apple_pay: failure 27.3% (3/11) > 10%
+[fail30] ALERT 08:44 card: failure 40.0% (8/20) > 10%
+[fail30] window 08:44  apple_pay 3/11=27%  card 8/20=40%  google_pay 2/8=25%  qr 1/1=100%
+[fail30] progress: read 5000, watermark 08:47:35, dups 51, late rejected 33
+[fail30] ALERT 08:45 card: failure 22.2% (4/18) > 10%
+[fail30] window 08:45  apple_pay 3/4=75%  card 4/18=22%  google_pay 0/5=0%
+[fail30] ALERT 08:46 card: failure 42.9% (6/14) > 10%
+[fail30] window 08:46  apple_pay 2/8=25%  card 6/14=43%  google_pay 2/6=33%
+[fail30] ALERT 08:47 apple_pay: failure 54.5% (6/11) > 10%
+[fail30] ALERT 08:47 card: failure 40.7% (11/27) > 10%
+[fail30] window 08:47  apple_pay 6/11=55%  card 11/27=41%  google_pay 2/4=50%  qr 0/1=0%
+[fail30] ALERT 08:48 card: failure 37.5% (6/16) > 10%
+[fail30] window 08:48  apple_pay 2/9=22%  card 6/16=38%  google_pay 3/6=50%
+[fail30] ALERT 08:49 card: failure 44.0% (11/25) > 10%
+[fail30] ALERT 08:49 google_pay: failure 40.0% (4/10) > 10%
+[fail30] window 08:49  apple_pay 3/7=43%  card 11/25=44%  google_pay 4/10=40%
+[fail30] window 08:50  apple_pay 2/6=33%  card 2/22=9%  google_pay 2/7=29%  qr 1/1=100%
+[fail30] ALERT 08:51 card: failure 42.9% (9/21) > 10%
+[fail30] window 08:51  apple_pay 4/8=50%  card 9/21=43%  google_pay 1/3=33%  qr 0/2=0%
+[fail30] ALERT 08:52 card: failure 33.3% (4/12) > 10%
+[fail30] window 08:52  apple_pay 2/7=29%  card 4/12=33%  google_pay 1/7=14%
+[fail30] ALERT 08:53 card: failure 45.0% (9/20) > 10%
+[fail30] window 08:53  apple_pay 2/8=25%  card 9/20=45%  google_pay 3/9=33%
+[fail30] ALERT 08:54 card: failure 38.5% (10/26) > 10%
+[fail30] window 08:54  apple_pay 3/7=43%  card 10/26=38%  google_pay 2/8=25%  qr 0/1=0%
+[fail30] ALERT 08:55 card: failure 36.8% (7/19) > 10%
+[fail30] window 08:55  apple_pay 2/8=25%  card 7/19=37%  google_pay 2/4=50%  qr 1/2=50%
+[fail30] ALERT 08:56 card: failure 56.2% (9/16) > 10%
+[fail30] window 08:56  apple_pay 2/8=25%  card 9/16=56%  google_pay 1/4=25%
+[fail30] ALERT 08:57 apple_pay: failure 41.7% (5/12) > 10%
+[fail30] ALERT 08:57 card: failure 25.0% (5/20) > 10%
+[fail30] window 08:57  apple_pay 5/12=42%  card 5/20=25%  google_pay 1/6=17%  qr 0/1=0%
+[fail30] ALERT 08:58 card: failure 29.2% (7/24) > 10%
+[fail30] window 08:58  apple_pay 2/6=33%  card 7/24=29%  google_pay 0/2=0%
+[fail30] ALERT 08:59 card: failure 45.0% (9/20) > 10%
+[fail30] window 08:59  apple_pay 0/9=0%  card 9/20=45%  google_pay 2/5=40%  qr 3/3=100%
+[fail30] ALERT 09:00 card: failure 25.0% (3/12) > 10%
+[fail30] window 09:00  apple_pay 5/9=56%  card 3/12=25%  google_pay 2/4=50%  qr 1/1=100%
+[fail30] ALERT 09:01 apple_pay: failure 46.2% (6/13) > 10%
+[fail30] ALERT 09:01 card: failure 22.2% (4/18) > 10%
+[fail30] window 09:01  apple_pay 6/13=46%  card 4/18=22%  google_pay 1/3=33%  qr 1/4=25%
+[fail30] ALERT 09:02 card: failure 35.7% (5/14) > 10%
+[fail30] window 09:02  apple_pay 2/5=40%  card 5/14=36%  google_pay 2/6=33%
+[fail30] ALERT 09:03 card: failure 28.6% (4/14) > 10%
+[fail30] window 09:03  apple_pay 0/5=0%  card 4/14=29%  google_pay 1/4=25%
+[fail30] ALERT 09:04 card: failure 26.7% (4/15) > 10%
+[fail30] window 09:04  apple_pay 1/8=12%  card 4/15=27%  google_pay 3/6=50%
+[fail30] ALERT 09:05 apple_pay: failure 29.4% (5/17) > 10%
+[fail30] ALERT 09:05 card: failure 27.3% (3/11) > 10%
+[fail30] window 09:05  apple_pay 5/17=29%  card 3/11=27%  google_pay 2/4=50%
+[fail30] ALERT 09:06 apple_pay: failure 30.0% (3/10) > 10%
+[fail30] ALERT 09:06 card: failure 43.8% (7/16) > 10%
+[fail30] window 09:06  apple_pay 3/10=30%  card 7/16=44%  google_pay 1/2=50%  qr 0/1=0%
+[fail30] ALERT 09:07 card: failure 18.8% (3/16) > 10%
+[fail30] window 09:07  apple_pay 3/5=60%  card 3/16=19%  google_pay 2/3=67%
+[fail30] ALERT 09:08 card: failure 35.0% (7/20) > 10%
+[fail30] window 09:08  apple_pay 3/9=33%  card 7/20=35%  google_pay 3/8=38%
+[fail30] ALERT 09:09 card: failure 36.4% (4/11) > 10%
+[fail30] window 09:09  apple_pay 3/5=60%  card 4/11=36%  google_pay 1/3=33%
+[fail30] ALERT 09:10 card: failure 25.0% (3/12) > 10%
+[fail30] window 09:10  apple_pay 3/9=33%  card 3/12=25%  google_pay 4/9=44%  qr 0/2=0%
+[fail30] ALERT 09:11 apple_pay: failure 20.0% (2/10) > 10%
+[fail30] ALERT 09:11 card: failure 41.7% (5/12) > 10%
+[fail30] window 09:11  apple_pay 2/10=20%  card 5/12=42%  google_pay 2/6=33%
+[fail30] ALERT 09:12 card: failure 33.3% (4/12) > 10%
+[fail30] window 09:12  apple_pay 5/9=56%  card 4/12=33%  google_pay 2/6=33%
+[fail30] ALERT 09:13 apple_pay: failure 21.4% (3/14) > 10%
+[fail30] ALERT 09:13 card: failure 31.6% (6/19) > 10%
+[fail30] window 09:13  apple_pay 3/14=21%  card 6/19=32%  google_pay 0/2=0%  qr 1/1=100%
+[fail30] ALERT 09:14 card: failure 34.6% (9/26) > 10%
+[fail30] window 09:14  apple_pay 3/7=43%  card 9/26=35%  google_pay 0/4=0%  qr 0/1=0%
+[fail30] ALERT 09:15 card: failure 53.3% (8/15) > 10%
+[fail30] window 09:15  apple_pay 4/6=67%  card 8/15=53%  google_pay 4/7=57%
+[fail30] ALERT 09:16 apple_pay: failure 54.5% (6/11) > 10%
+[fail30] ALERT 09:16 card: failure 26.3% (5/19) > 10%
+[fail30] window 09:16  apple_pay 6/11=55%  card 5/19=26%  google_pay 2/5=40%  qr 1/1=100%
+[fail30] ALERT 09:17 apple_pay: failure 20.0% (2/10) > 10%
+[fail30] ALERT 09:17 card: failure 38.5% (5/13) > 10%
+[fail30] window 09:17  apple_pay 2/10=20%  card 5/13=38%  google_pay 0/5=0%
+[fail30] ALERT 09:18 card: failure 61.5% (8/13) > 10%
+[fail30] window 09:18  apple_pay 1/5=20%  card 8/13=62%  google_pay 1/4=25%
+[fail30] ALERT 09:19 card: failure 60.0% (9/15) > 10%
+[fail30] ALERT 09:19 google_pay: failure 30.0% (3/10) > 10%
+[fail30] window 09:19  apple_pay 2/7=29%  card 9/15=60%  google_pay 3/10=30%
+[fail30] ALERT 09:20 card: failure 42.1% (8/19) > 10%
+[fail30] window 09:20  apple_pay 3/6=50%  card 8/19=42%  google_pay 2/7=29%
+[fail30] ALERT 09:21 card: failure 50.0% (6/12) > 10%
+[fail30] window 09:21  apple_pay 1/4=25%  card 6/12=50%  google_pay 1/7=14%  qr 1/1=100%
+[fail30] ALERT 09:22 apple_pay: failure 36.4% (4/11) > 10%
+[fail30] ALERT 09:22 card: failure 27.8% (5/18) > 10%
+[fail30] window 09:22  apple_pay 4/11=36%  card 5/18=28%  google_pay 3/3=100%
+[fail30] window 09:23  apple_pay 4/9=44%  card 2/7=29%  google_pay 0/3=0%
+[fail30] ALERT 09:24 card: failure 72.7% (8/11) > 10%
+[fail30] window 09:24  apple_pay 2/4=50%  card 8/11=73%  google_pay 4/7=57%
+[fail30] ALERT 09:25 apple_pay: failure 27.3% (3/11) > 10%
+[fail30] ALERT 09:25 card: failure 47.1% (8/17) > 10%
+[fail30] window 09:25  apple_pay 3/11=27%  card 8/17=47%  google_pay 2/6=33%
+[fail30] ALERT 09:26 card: failure 37.5% (6/16) > 10%
+[fail30] window 09:26  apple_pay 2/5=40%  card 6/16=38%  google_pay 1/3=33%
+[fail30] window 09:27  apple_pay 2/7=29%  card 1/13=8%  google_pay 2/8=25%  qr 0/1=0%
+[fail30] ALERT 09:28 card: failure 23.1% (3/13) > 10%
+[fail30] window 09:28  apple_pay 5/8=62%  card 3/13=23%  google_pay 1/4=25%
+[fail30] ALERT 09:29 card: failure 50.0% (9/18) > 10%
+[fail30] window 09:29  apple_pay 2/9=22%  card 9/18=50%  google_pay 2/5=40%  qr 0/1=0%
+[fail30] ALERT 09:30 apple_pay: failure 46.2% (6/13) > 10%
+[fail30] ALERT 09:30 card: failure 26.7% (4/15) > 10%
+[fail30] ALERT 09:30 google_pay: failure 33.3% (4/12) > 10%
+[fail30] window 09:30  apple_pay 6/13=46%  card 4/15=27%  google_pay 4/12=33%  qr 0/1=0%
+[fail30] ALERT 09:31 card: failure 35.7% (5/14) > 10%
+[fail30] window 09:31  apple_pay 0/6=0%  card 5/14=36%  google_pay 1/5=20%
+[fail30] ALERT 09:32 card: failure 31.2% (5/16) > 10%
+[fail30] window 09:32  apple_pay 1/7=14%  card 5/16=31%  google_pay 0/2=0%
+[fail30] ALERT 09:33 card: failure 66.7% (10/15) > 10%
+[fail30] window 09:33  apple_pay 2/7=29%  card 10/15=67%  google_pay 2/7=29%  qr 0/1=0%
+[fail30] ALERT 09:34 card: failure 43.8% (7/16) > 10%
+[fail30] window 09:34  apple_pay 1/5=20%  card 7/16=44%  google_pay 0/1=0%
+[fail30] ALERT 09:35 card: failure 30.8% (4/13) > 10%
+[fail30] window 09:35  apple_pay 1/6=17%  card 4/13=31%  google_pay 2/5=40%  qr 0/1=0%
+[fail30] ALERT 09:36 apple_pay: failure 20.0% (2/10) > 10%
+[fail30] ALERT 09:36 card: failure 68.8% (11/16) > 10%
+[fail30] window 09:36  apple_pay 2/10=20%  card 11/16=69%  google_pay 1/3=33%  qr 1/1=100%
+[fail30] ALERT 09:37 card: failure 42.9% (6/14) > 10%
+[fail30] window 09:37  apple_pay 2/8=25%  card 6/14=43%  google_pay 1/3=33%
+[fail30] ALERT 09:38 card: failure 33.3% (7/21) > 10%
+[fail30] window 09:38  apple_pay 4/9=44%  card 7/21=33%  google_pay 1/2=50%
+[fail30] progress: read 10000, watermark 09:41:35, dups 101, late rejected 56
+[fail30] ALERT 09:39 card: failure 35.0% (7/20) > 10%
+[fail30] window 09:39  apple_pay 1/6=17%  card 7/20=35%  google_pay 2/5=40%
+[fail30] ALERT 09:40 apple_pay: failure 58.3% (7/12) > 10%
+[fail30] ALERT 09:40 card: failure 47.6% (10/21) > 10%
+[fail30] window 09:40  apple_pay 7/12=58%  card 10/21=48%  google_pay 6/8=75%  qr 1/1=100%
+[fail30] window 09:41  apple_pay 5/8=62%  card 4/9=44%  google_pay 2/5=40%
+[fail30] ALERT 09:42 card: failure 27.3% (3/11) > 10%
+[fail30] window 09:42  apple_pay 4/8=50%  card 3/11=27%  google_pay 1/5=20%
+[fail30] ALERT 09:43 apple_pay: failure 50.0% (5/10) > 10%
+[fail30] ALERT 09:43 card: failure 47.1% (8/17) > 10%
+[fail30] window 09:43  apple_pay 5/10=50%  card 8/17=47%  google_pay 1/3=33%  qr 0/1=0%
+[fail30] ALERT 09:44 card: failure 27.3% (6/22) > 10%
+[fail30] window 09:44  apple_pay 0/6=0%  card 6/22=27%  google_pay 0/2=0%  qr 0/1=0%
+[fail30] ALERT 09:45 card: failure 40.9% (9/22) > 10%
+[fail30] window 09:45  apple_pay 4/5=80%  card 9/22=41%  google_pay 1/5=20%
+[fail30] ALERT 09:46 card: failure 39.1% (9/23) > 10%
+[fail30] window 09:46  apple_pay 4/9=44%  card 9/23=39%  google_pay 1/3=33%  qr 0/1=0%
+[fail30] ALERT 09:47 card: failure 35.3% (6/17) > 10%
+[fail30] window 09:47  apple_pay 1/4=25%  card 6/17=35%  google_pay 3/6=50%
+[fail30] ALERT 09:48 card: failure 35.3% (6/17) > 10%
+[fail30] window 09:48  apple_pay 1/4=25%  card 6/17=35%  google_pay 0/2=0%
+[fail30] ALERT 09:49 card: failure 25.0% (5/20) > 10%
+[fail30] window 09:49  apple_pay 1/6=17%  card 5/20=25%  google_pay 3/8=38%  qr 1/1=100%
+[fail30] ALERT 09:50 card: failure 50.0% (6/12) > 10%
+[fail30] window 09:50  apple_pay 4/7=57%  card 6/12=50%  google_pay 0/2=0%
+[fail30] ALERT 09:51 card: failure 28.6% (4/14) > 10%
+[fail30] window 09:51  apple_pay 0/5=0%  card 4/14=29%  google_pay 1/7=14%
+[fail30] ALERT 09:52 card: failure 20.0% (2/10) > 10%
+[fail30] window 09:52  apple_pay 2/8=25%  card 2/10=20%  google_pay 0/5=0%
+[fail30] ALERT 09:53 card: failure 38.9% (7/18) > 10%
+[fail30] ALERT 09:53 google_pay: failure 40.0% (4/10) > 10%
+[fail30] window 09:53  apple_pay 4/9=44%  card 7/18=39%  google_pay 4/10=40%
+[fail30] ALERT 09:54 card: failure 25.0% (5/20) > 10%
+[fail30] window 09:54  apple_pay 1/8=12%  card 5/20=25%  google_pay 2/7=29%  qr 1/1=100%
+[fail30] ALERT 09:55 apple_pay: failure 16.7% (2/12) > 10%
+[fail30] window 09:55  apple_pay 2/12=17%  card 3/8=38%  google_pay 2/4=50%
+[fail30] ALERT 09:56 apple_pay: failure 50.0% (5/10) > 10%
+[fail30] ALERT 09:56 card: failure 44.4% (8/18) > 10%
+[fail30] window 09:56  apple_pay 5/10=50%  card 8/18=44%  google_pay 1/3=33%  qr 0/1=0%
+[fail30] ALERT 09:57 card: failure 50.0% (9/18) > 10%
+[fail30] window 09:57  apple_pay 1/5=20%  card 9/18=50%  google_pay 1/4=25%
+[fail30] ALERT 09:58 card: failure 18.8% (3/16) > 10%
+[fail30] window 09:58  apple_pay 4/9=44%  card 3/16=19%  google_pay 0/2=0%
+[fail30] ALERT 09:59 card: failure 40.0% (8/20) > 10%
+[fail30] window 09:59  apple_pay 1/11=9%  card 8/20=40%  google_pay 3/4=75%  qr 1/3=33%
+[fail30] ALERT 10:00 apple_pay: failure 16.7% (2/12) > 10%
+[fail30] window 10:00  apple_pay 2/12=17%  card 3/8=38%  google_pay 0/3=0%
+[fail30] ALERT 10:01 card: failure 28.6% (4/14) > 10%
+[fail30] window 10:01  apple_pay 3/7=43%  card 4/14=29%  google_pay 1/5=20%
+[fail30] revoked partitions [0, 1, 2]
+[fail30] summary: read 12000, duplicates dropped 121, late rejected 67, windows closed 123, open windows 3, alerts 154, seen-set size 11879
+[fail30] most late events in windows: 08:33=3, 08:03=2, 08:12=2, 08:08=2, 08:17=2

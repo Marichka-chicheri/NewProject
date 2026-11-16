@@ -1,0 +1,88 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 470" font-family="Segoe UI, Helvetica, Arial, sans-serif" font-size="13">
+  <defs>
+    <marker id="a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#444"/>
+    </marker>
+    <style>
+      .box{fill:#fff;stroke:#444;stroke-width:1.4;rx:8}
+      .aws{fill:#fff7ec;stroke:#d9822b}
+      .local{fill:#eef4ff;stroke:#4a6fb5}
+      .t{font-weight:600;font-size:14px}
+      .s{fill:#555;font-size:11px}
+      .l{stroke:#444;stroke-width:1.5;fill:none;marker-end:url(#a)}
+      .lbl{fill:#333;font-size:11.5px}
+    </style>
+  </defs>
+  <rect width="1000" height="470" fill="#fff"/>
+  <text x="20" y="28" font-size="17" font-weight="700">Lab 8, Part 4 — payments streaming in AWS (us-east-1)</text>
+
+  <!-- AWS boundary -->
+  <rect x="210" y="50" width="775" height="405" rx="12" fill="none" stroke="#d9822b" stroke-dasharray="6 4"/>
+  <text x="230" y="70" fill="#d9822b" font-weight="600">AWS account · stack lab8-streaming (CloudFormation)</text>
+
+  <!-- producer -->
+  <rect class="box local" x="12" y="190" width="186" height="88"/>
+  <text class="t" x="24" y="215">Producer (laptop)</text>
+  <text class="s" x="24" y="235">part4/producer.py</text>
+  <text class="s" x="24" y="252">replays 2026-10-01 by receivedAt</text>
+  <text class="s" x="24" y="268">~20 payments/s, key invoiceId</text>
+
+  <!-- kinesis -->
+  <rect class="box aws" x="250" y="190" width="170" height="88"/>
+  <text class="t" x="265" y="215">Kinesis Data Streams</text>
+  <text class="s" x="265" y="235">lab8-payments</text>
+  <text class="s" x="265" y="252">1 shard, 24 h retention</text>
+  <text class="s" x="265" y="268">the log (≈ Redpanda topic)</text>
+  <path class="l" d="M198,234 H248"/>
+  <text class="lbl" x="216" y="226">Put</text>
+
+  <!-- firehose (batch road) -->
+  <rect class="box aws" x="480" y="95" width="170" height="80"/>
+  <text class="t" x="495" y="120">Data Firehose</text>
+  <text class="s" x="495" y="140">lab8-payments-to-s3</text>
+  <text class="s" x="495" y="157">buffer 60 s / 5 MB</text>
+  <path class="l" d="M420,215 C450,215 450,135 478,135"/>
+
+  <rect class="box aws" x="700" y="95" width="120" height="80"/>
+  <text class="t" x="715" y="120">S3</text>
+  <text class="s" x="715" y="140">stream/payments/</text>
+  <text class="s" x="715" y="157">dt=YYYY-MM-DD/</text>
+  <path class="l" d="M650,135 H698"/>
+  <text class="lbl" x="674" y="122" text-anchor="middle">JSON</text><text class="lbl" x="674" y="155" text-anchor="middle">Lines</text>
+
+  <rect class="box aws" x="835" y="95" width="135" height="80"/>
+  <text class="t" x="847" y="120">Athena</text>
+  <text class="s" x="847" y="140">lab8.stream_events</text>
+  <text class="s" x="847" y="157">partition projection</text>
+  <path class="l" d="M820,135 H833"/>
+
+  <rect class="box aws" x="700" y="200" width="270" height="44"/>
+  <text class="s" x="712" y="227">Glue Data Catalog: table schema + dt projection</text>
+  <path class="l" d="M895,198 V177"/>
+
+  <!-- lambda (fast road) -->
+  <rect class="box aws" x="480" y="310" width="170" height="96"/>
+  <text class="t" x="495" y="335">Lambda</text>
+  <text class="s" x="495" y="355">lab8-failure-alert</text>
+  <text class="s" x="495" y="372">batch ≤ 5000 / 60 s window</text>
+  <text class="s" x="495" y="389">dedup, failure % per method</text>
+  <path class="l" d="M420,255 C450,255 450,358 478,358"/>
+  <text class="lbl" x="330" y="302">event source</text>
+  <text class="lbl" x="330" y="316">mapping</text>
+
+  <rect class="box aws" x="700" y="310" width="120" height="96"/>
+  <text class="t" x="715" y="335">SNS</text>
+  <text class="s" x="715" y="355">lab8-payment-</text>
+  <text class="s" x="715" y="372">alerts</text>
+  <path class="l" d="M650,358 H698"/>
+  <text class="lbl" x="655" y="350">&gt; 10 %</text>
+
+  <rect class="box aws" x="835" y="310" width="135" height="96"/>
+  <text class="t" x="847" y="335">CloudWatch</text>
+  <text class="s" x="847" y="355">Logs: ALERT</text>
+  <text class="s" x="847" y="372">lines, batches</text>
+  <path class="l" d="M565,408 V430 H895 V408"/>
+
+  <text x="480" y="88" fill="#d9822b" font-weight="600">batch road: minutes</text>
+  <text x="480" y="303" fill="#d9822b" font-weight="600">fast road: ~1 min</text>
+</svg>

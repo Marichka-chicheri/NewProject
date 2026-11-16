@@ -1,0 +1,8 @@
+replaying 89065 events at ~20 payments/s into payments-cmp
+sent 2000/12000 events (61 ev/s), receivedAt=2026-10-01T08:18:48Z
+sent 4000/12000 events (61 ev/s), receivedAt=2026-10-01T08:38:16Z
+sent 6000/12000 events (61 ev/s), receivedAt=2026-10-01T08:57:03Z
+sent 8000/12000 events (61 ev/s), receivedAt=2026-10-01T09:18:26Z
+sent 10000/12000 events (61 ev/s), receivedAt=2026-10-01T09:41:35Z
+sent 12000/12000 events (61 ev/s), receivedAt=2026-10-01T10:04:15Z
+done: sent 12000, delivery errors 0

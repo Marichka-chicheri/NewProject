@@ -1,0 +1,5 @@
+{"records": 3663, "outcomes": {"apple_pay": "19/301", "card": "46/660", "qr": "3/24", "google_pay": "15/224"}}
+	{"records": 3622, "outcomes": {"card": "30/642", "apple_pay": "23/324", "google_pay": "11/208", "qr": "0/24"}}
+	{"records": 3473, "outcomes": {"card": "216/647", "apple_pay": "80/273", "google_pay": "64/202", "qr": "10/21"}}
+	{"records": 2933, "outcomes": {"card": "172/520", "google_pay": "59/183", "apple_pay": "78/251", "qr": "4/19"}}
+

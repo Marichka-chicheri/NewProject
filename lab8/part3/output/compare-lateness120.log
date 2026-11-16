@@ -1,0 +1,163 @@
+[L120] assigned partitions [0, 1, 2]
+[L120] window 07:59  card 0/1=0%
+[L120] window 08:00  apple_pay 0/8=0%  card 1/17=6%  google_pay 0/2=0%  qr 0/1=0%
+[L120] window 08:01  apple_pay 0/7=0%  card 1/18=6%  google_pay 0/7=0%
+[L120] window 08:02  apple_pay 1/7=14%  card 1/13=8%  google_pay 0/6=0%  qr 0/2=0%
+[L120] ALERT 08:03 apple_pay: failure 16.7% (2/12) > 10%
+[L120] window 08:03  apple_pay 2/12=17%  card 1/11=9%  google_pay 1/6=17%  qr 0/1=0%
+[L120] ALERT 08:04 card: failure 13.0% (3/23) > 10%
+[L120] window 08:04  apple_pay 2/9=22%  card 3/23=13%  google_pay 1/9=11%  qr 0/1=0%
+[L120] window 08:05  apple_pay 0/10=0%  card 2/25=8%  google_pay 1/4=25%
+[L120] window 08:06  apple_pay 0/7=0%  card 1/14=7%  google_pay 0/5=0%  qr 0/2=0%
+[L120] window 08:07  apple_pay 0/11=0%  card 1/25=4%  google_pay 0/4=0%  qr 0/3=0%
+[L120] window 08:08  apple_pay 2/9=22%  card 1/9=11%  google_pay 0/10=0%  qr 0/1=0%
+[L120] window 08:09  apple_pay 0/4=0%  card 0/18=0%  google_pay 0/2=0%
+[L120] window 08:10  apple_pay 0/12=0%  card 0/20=0%  google_pay 0/4=0%
+[L120] window 08:11  apple_pay 0/10=0%  card 0/24=0%  google_pay 1/7=14%  qr 0/1=0%
+[L120] ALERT 08:12 card: failure 12.0% (3/25) > 10%
+[L120] window 08:12  apple_pay 1/7=14%  card 3/25=12%  google_pay 0/3=0%  qr 1/3=33%
+[L120] window 08:13  apple_pay 2/9=22%  card 0/23=0%  google_pay 2/8=25%  qr 0/1=0%
+[L120] window 08:14  apple_pay 0/8=0%  card 1/13=8%  google_pay 1/6=17%  qr 1/2=50%
+[L120] window 08:15  apple_pay 0/8=0%  card 0/20=0%  google_pay 0/4=0%  qr 0/1=0%
+[L120] window 08:16  apple_pay 1/12=8%  card 1/17=6%  google_pay 0/5=0%  qr 0/1=0%
+[L120] window 08:17  apple_pay 0/8=0%  card 1/15=7%  google_pay 0/4=0%  qr 0/2=0%
+[L120] window 08:18  apple_pay 1/6=17%  card 1/28=4%  google_pay 0/6=0%
+[L120] window 08:19  apple_pay 1/11=9%  card 0/14=0%  google_pay 0/5=0%
+[L120] window 08:20  apple_pay 1/12=8%  card 0/12=0%  google_pay 0/5=0%  qr 0/1=0%
+[L120] window 08:21  apple_pay 0/9=0%  card 0/17=0%  google_pay 0/4=0%
+[L120] ALERT 08:22 card: failure 13.6% (3/22) > 10%
+[L120] window 08:22  apple_pay 0/9=0%  card 3/22=14%  google_pay 1/10=10%
+[L120] ALERT 08:23 card: failure 10.3% (3/29) > 10%
+[L120] window 08:23  apple_pay 0/6=0%  card 3/29=10%  google_pay 2/7=29%  qr 0/1=0%
+[L120] window 08:24  apple_pay 1/5=20%  card 0/19=0%  google_pay 2/7=29%
+[L120] window 08:25  apple_pay 1/10=10%  card 0/23=0%  google_pay 0/4=0%  qr 0/1=0%
+[L120] window 08:26  apple_pay 0/8=0%  card 1/13=8%  google_pay 0/9=0%
+[L120] ALERT 08:27 card: failure 13.0% (3/23) > 10%
+[L120] window 08:27  apple_pay 0/12=0%  card 3/23=13%  google_pay 0/6=0%
+[L120] window 08:28  apple_pay 0/11=0%  card 0/16=0%  google_pay 0/4=0%
+[L120] ALERT 08:29 card: failure 17.6% (3/17) > 10%
+[L120] window 08:29  apple_pay 1/10=10%  card 3/17=18%  google_pay 0/4=0%
+[L120] window 08:30  apple_pay 0/12=0%  card 1/6=17%  google_pay 0/10=0%
+[L120] ALERT 08:31 card: failure 21.1% (4/19) > 10%
+[L120] window 08:31  apple_pay 0/9=0%  card 4/19=21%  google_pay 0/5=0%  qr 0/1=0%
+[L120] window 08:32  apple_pay 0/5=0%  card 0/15=0%  google_pay 0/7=0%
+[L120] window 08:33  apple_pay 0/7=0%  card 1/11=9%  google_pay 0/7=0%
+[L120] window 08:34  apple_pay 0/8=0%  card 1/18=6%  google_pay 0/5=0%
+[L120] ALERT 08:35 card: failure 11.1% (2/18) > 10%
+[L120] window 08:35  apple_pay 0/6=0%  card 2/18=11%  google_pay 0/6=0%  qr 0/1=0%
+[L120] ALERT 08:36 card: failure 14.3% (2/14) > 10%
+[L120] ALERT 08:36 google_pay: failure 21.4% (3/14) > 10%
+[L120] window 08:36  apple_pay 0/6=0%  card 2/14=14%  google_pay 3/14=21%  qr 0/1=0%
+[L120] window 08:37  apple_pay 0/7=0%  card 2/21=10%  google_pay 1/9=11%  qr 0/2=0%
+[L120] ALERT 08:38 apple_pay: failure 18.2% (2/11) > 10%
+[L120] window 08:38  apple_pay 2/11=18%  card 1/20=5%  google_pay 0/9=0%  qr 1/1=100%
+[L120] ALERT 08:39 card: failure 13.0% (3/23) > 10%
+[L120] window 08:39  apple_pay 0/13=0%  card 3/23=13%  google_pay 0/2=0%
+[L120] window 08:40  apple_pay 1/3=33%  card 0/24=0%  google_pay 0/4=0%  qr 0/1=0%
+[L120] window 08:41  apple_pay 0/6=0%  card 0/13=0%  google_pay 0/4=0%
+[L120] window 08:42  apple_pay 2/6=33%  card 1/21=5%  google_pay 0/4=0%  qr 0/1=0%
+[L120] window 08:43  apple_pay 1/10=10%  card 2/25=8%  google_pay 0/9=0%  qr 0/2=0%
+[L120] window 08:44  apple_pay 1/11=9%  card 2/20=10%  google_pay 2/8=25%  qr 0/1=0%
+[L120] progress: read 5000, watermark 08:47:35, dups 51, late rejected 33
+[L120] window 08:45  apple_pay 2/4=50%  card 1/18=6%  google_pay 0/5=0%
+[L120] ALERT 08:46 card: failure 14.3% (2/14) > 10%
+[L120] window 08:46  apple_pay 0/8=0%  card 2/14=14%  google_pay 0/6=0%
+[L120] window 08:47  apple_pay 0/11=0%  card 0/27=0%  google_pay 0/4=0%  qr 0/1=0%
+[L120] window 08:48  apple_pay 0/9=0%  card 1/16=6%  google_pay 0/6=0%
+[L120] window 08:49  apple_pay 1/7=14%  card 0/25=0%  google_pay 0/10=0%
+[L120] window 08:50  apple_pay 0/6=0%  card 0/22=0%  google_pay 2/7=29%  qr 0/1=0%
+[L120] ALERT 08:51 card: failure 14.3% (3/21) > 10%
+[L120] window 08:51  apple_pay 1/8=12%  card 3/21=14%  google_pay 0/3=0%  qr 0/2=0%
+[L120] window 08:52  apple_pay 1/7=14%  card 0/12=0%  google_pay 0/7=0%
+[L120] window 08:53  apple_pay 0/8=0%  card 1/20=5%  google_pay 1/9=11%
+[L120] ALERT 08:54 card: failure 11.5% (3/26) > 10%
+[L120] window 08:54  apple_pay 0/7=0%  card 3/26=12%  google_pay 1/8=12%  qr 0/1=0%
+[L120] ALERT 08:55 card: failure 10.5% (2/19) > 10%
+[L120] window 08:55  apple_pay 0/8=0%  card 2/19=11%  google_pay 0/4=0%  qr 0/2=0%
+[L120] window 08:56  apple_pay 1/8=12%  card 0/16=0%  google_pay 0/4=0%
+[L120] window 08:57  apple_pay 0/12=0%  card 1/20=5%  google_pay 0/6=0%  qr 0/1=0%
+[L120] window 08:58  apple_pay 1/6=17%  card 0/24=0%  google_pay 0/2=0%
+[L120] window 08:59  apple_pay 0/9=0%  card 0/20=0%  google_pay 0/5=0%  qr 0/3=0%
+[L120] window 09:00  apple_pay 2/9=22%  card 0/12=0%  google_pay 0/4=0%  qr 0/1=0%
+[L120] window 09:01  apple_pay 0/13=0%  card 1/18=6%  google_pay 0/3=0%  qr 0/4=0%
+[L120] window 09:02  apple_pay 0/5=0%  card 1/14=7%  google_pay 1/6=17%
+[L120] window 09:03  apple_pay 0/5=0%  card 1/14=7%  google_pay 0/4=0%
+[L120] window 09:04  apple_pay 1/8=12%  card 1/15=7%  google_pay 1/6=17%
+[L120] ALERT 09:05 card: failure 18.2% (2/11) > 10%
+[L120] window 09:05  apple_pay 0/17=0%  card 2/11=18%  google_pay 1/4=25%
+[L120] ALERT 09:06 card: failure 12.5% (2/16) > 10%
+[L120] window 09:06  apple_pay 0/10=0%  card 2/16=12%  google_pay 0/2=0%  qr 0/1=0%
+[L120] window 09:07  apple_pay 1/5=20%  card 1/16=6%  google_pay 0/3=0%
+[L120] window 09:08  apple_pay 1/9=11%  card 1/20=5%  google_pay 0/8=0%
+[L120] window 09:09  apple_pay 0/5=0%  card 0/11=0%  google_pay 0/3=0%
+[L120] window 09:10  apple_pay 1/9=11%  card 0/12=0%  google_pay 1/9=11%  qr 0/2=0%
+[L120] window 09:11  apple_pay 0/10=0%  card 0/12=0%  google_pay 0/6=0%
+[L120] window 09:12  apple_pay 2/9=22%  card 1/12=8%  google_pay 1/6=17%
+[L120] window 09:13  apple_pay 1/14=7%  card 0/19=0%  google_pay 0/2=0%  qr 0/1=0%
+[L120] window 09:14  apple_pay 0/7=0%  card 2/26=8%  google_pay 0/4=0%  qr 0/1=0%
+[L120] window 09:15  apple_pay 0/6=0%  card 0/15=0%  google_pay 1/7=14%
+[L120] ALERT 09:16 apple_pay: failure 18.2% (2/11) > 10%
+[L120] window 09:16  apple_pay 2/11=18%  card 1/19=5%  google_pay 0/5=0%  qr 0/1=0%
+[L120] window 09:17  apple_pay 1/10=10%  card 0/13=0%  google_pay 0/5=0%
+[L120] window 09:18  apple_pay 1/5=20%  card 0/13=0%  google_pay 0/4=0%
+[L120] ALERT 09:19 card: failure 20.0% (3/15) > 10%
+[L120] window 09:19  apple_pay 0/7=0%  card 3/15=20%  google_pay 0/10=0%
+[L120] window 09:20  apple_pay 1/6=17%  card 0/19=0%  google_pay 0/7=0%
+[L120] window 09:21  apple_pay 1/4=25%  card 0/12=0%  google_pay 0/7=0%  qr 0/1=0%
+[L120] ALERT 09:22 apple_pay: failure 18.2% (2/11) > 10%
+[L120] window 09:22  apple_pay 2/11=18%  card 1/18=6%  google_pay 0/3=0%
+[L120] window 09:23  apple_pay 0/9=0%  card 0/7=0%  google_pay 0/3=0%
+[L120] window 09:24  apple_pay 1/4=25%  card 0/11=0%  google_pay 1/7=14%
+[L120] ALERT 09:25 card: failure 11.8% (2/17) > 10%
+[L120] window 09:25  apple_pay 0/11=0%  card 2/17=12%  google_pay 0/6=0%
+[L120] window 09:26  apple_pay 0/5=0%  card 1/16=6%  google_pay 1/3=33%
+[L120] window 09:27  apple_pay 0/7=0%  card 1/13=8%  google_pay 0/8=0%  qr 0/1=0%
+[L120] window 09:28  apple_pay 1/8=12%  card 0/13=0%  google_pay 0/4=0%
+[L120] ALERT 09:29 card: failure 11.1% (2/18) > 10%
+[L120] window 09:29  apple_pay 1/9=11%  card 2/18=11%  google_pay 1/5=20%  qr 0/1=0%
+[L120] ALERT 09:30 apple_pay: failure 15.4% (2/13) > 10%
+[L120] window 09:30  apple_pay 2/13=15%  card 1/15=7%  google_pay 1/12=8%  qr 0/1=0%
+[L120] ALERT 09:31 card: failure 21.4% (3/14) > 10%
+[L120] window 09:31  apple_pay 0/6=0%  card 3/14=21%  google_pay 0/5=0%
+[L120] window 09:32  apple_pay 0/7=0%  card 0/16=0%  google_pay 0/2=0%
+[L120] ALERT 09:33 card: failure 13.3% (2/15) > 10%
+[L120] window 09:33  apple_pay 0/7=0%  card 2/15=13%  google_pay 0/7=0%  qr 0/1=0%
+[L120] ALERT 09:34 card: failure 12.5% (2/16) > 10%
+[L120] window 09:34  apple_pay 0/5=0%  card 2/16=12%  google_pay 0/1=0%
+[L120] window 09:35  apple_pay 0/6=0%  card 1/13=8%  google_pay 1/5=20%  qr 0/1=0%
+[L120] window 09:36  apple_pay 0/10=0%  card 1/16=6%  google_pay 0/3=0%  qr 0/1=0%
+[L120] window 09:37  apple_pay 0/8=0%  card 1/14=7%  google_pay 0/3=0%
+[L120] window 09:38  apple_pay 0/9=0%  card 0/21=0%  google_pay 0/2=0%
+[L120] progress: read 10000, watermark 09:41:35, dups 101, late rejected 56
+[L120] ALERT 09:39 card: failure 15.0% (3/20) > 10%
+[L120] window 09:39  apple_pay 0/6=0%  card 3/20=15%  google_pay 0/5=0%
+[L120] ALERT 09:40 card: failure 14.3% (3/21) > 10%
+[L120] window 09:40  apple_pay 1/12=8%  card 3/21=14%  google_pay 0/8=0%  qr 0/1=0%
+[L120] window 09:41  apple_pay 2/8=25%  card 2/9=22%  google_pay 0/5=0%
+[L120] window 09:42  apple_pay 0/8=0%  card 0/11=0%  google_pay 0/5=0%
+[L120] ALERT 09:43 card: failure 17.6% (3/17) > 10%
+[L120] window 09:43  apple_pay 1/10=10%  card 3/17=18%  google_pay 1/3=33%  qr 0/1=0%
+[L120] window 09:44  apple_pay 0/6=0%  card 1/22=5%  google_pay 0/2=0%  qr 0/1=0%
+[L120] window 09:45  apple_pay 1/5=20%  card 2/22=9%  google_pay 0/5=0%
+[L120] window 09:46  apple_pay 0/9=0%  card 2/23=9%  google_pay 0/3=0%  qr 0/1=0%
+[L120] window 09:47  apple_pay 0/4=0%  card 0/17=0%  google_pay 2/6=33%
+[L120] window 09:48  apple_pay 0/4=0%  card 1/17=6%  google_pay 0/2=0%
+[L120] window 09:49  apple_pay 0/6=0%  card 0/20=0%  google_pay 0/8=0%  qr 1/1=100%
+[L120] window 09:50  apple_pay 1/7=14%  card 1/12=8%  google_pay 0/2=0%
+[L120] window 09:51  apple_pay 0/5=0%  card 0/14=0%  google_pay 0/7=0%
+[L120] window 09:52  apple_pay 0/8=0%  card 1/10=10%  google_pay 0/5=0%
+[L120] window 09:53  apple_pay 0/9=0%  card 0/18=0%  google_pay 1/10=10%
+[L120] window 09:54  apple_pay 0/8=0%  card 2/20=10%  google_pay 1/7=14%  qr 0/1=0%
+[L120] window 09:55  apple_pay 1/12=8%  card 2/8=25%  google_pay 0/4=0%
+[L120] ALERT 09:56 card: failure 27.8% (5/18) > 10%
+[L120] window 09:56  apple_pay 1/10=10%  card 5/18=28%  google_pay 1/3=33%  qr 0/1=0%
+[L120] ALERT 09:57 card: failure 16.7% (3/18) > 10%
+[L120] window 09:57  apple_pay 0/5=0%  card 3/18=17%  google_pay 0/4=0%
+[L120] window 09:58  apple_pay 2/9=22%  card 0/16=0%  google_pay 0/2=0%
+[L120] window 09:59  apple_pay 0/11=0%  card 1/20=5%  google_pay 0/4=0%  qr 0/3=0%
+[L120] ALERT 10:00 apple_pay: failure 16.7% (2/12) > 10%
+[L120] window 10:00  apple_pay 2/12=17%  card 0/8=0%  google_pay 0/3=0%
+[L120] window 10:01  apple_pay 1/7=14%  card 1/14=7%  google_pay 1/5=20%
+[L120] revoked partitions [0, 1, 2]
+[L120] summary: read 12000, duplicates dropped 121, late rejected 67, windows closed 123, open windows 3, alerts 34, seen-set size 11879
+[L120] most late events in windows: 08:33=3, 08:03=2, 08:12=2, 08:08=2, 08:17=2

@@ -1,0 +1,208 @@
+AWSTemplateFormatVersion: "2010-09-09"
+Description: >
+  Lab 8 Part 4 - streaming in the cloud. Producer -> Kinesis Data Streams ->
+  (1) Firehose -> S3 stream/ -> Athena (Glue table with partition projection),
+  (2) Lambda -> failure share per paymentMethod -> SNS alert.
+  Delete the stack when done: the shard is billed per hour.
+
+Parameters:
+  BucketName:
+    Type: String
+    Default: lab8-payments-274394226432
+  AlertEmail:
+    Type: String
+    Default: ""
+    Description: optional; SNS sends a confirmation mail first
+  Threshold:
+    Type: String
+    Default: "0.10"
+
+Conditions:
+  HasEmail: !Not [!Equals [!Ref AlertEmail, ""]]
+
+Resources:
+  Stream:
+    Type: AWS::Kinesis::Stream
+    Properties:
+      Name: lab8-payments
+      ShardCount: 1               # 1 MB/s or 1000 records/s in; ~60 events/s is far below
+      RetentionPeriodHours: 24
+      StreamModeDetails: { StreamMode: PROVISIONED }
+
+  # ---------- Firehose: stream -> S3 in batches ----------
+  FirehoseRole:
+    Type: AWS::IAM::Role
+    Properties:
+      AssumeRolePolicyDocument:
+        Version: "2012-10-17"
+        Statement:
+          - Effect: Allow
+            Principal: { Service: firehose.amazonaws.com }
+            Action: sts:AssumeRole
+      Policies:
+        - PolicyName: read-stream-write-s3
+          PolicyDocument:
+            Version: "2012-10-17"
+            Statement:
+              - Effect: Allow
+                Action: [kinesis:DescribeStream, kinesis:GetShardIterator, kinesis:GetRecords, kinesis:ListShards]
+                Resource: !GetAtt Stream.Arn
+              - Effect: Allow
+                Action: [s3:AbortMultipartUpload, s3:GetBucketLocation, s3:GetObject, s3:ListBucket,
+                         s3:ListBucketMultipartUploads, s3:PutObject]
+                Resource:
+                  - !Sub arn:aws:s3:::${BucketName}
+                  - !Sub arn:aws:s3:::${BucketName}/stream/*
+
+  Firehose:
+    Type: AWS::KinesisFirehose::DeliveryStream
+    Properties:
+      DeliveryStreamName: lab8-payments-to-s3
+      DeliveryStreamType: KinesisStreamAsSource
+      KinesisStreamSourceConfiguration:
+        KinesisStreamARN: !GetAtt Stream.Arn
+        RoleARN: !GetAtt FirehoseRole.Arn
+      ExtendedS3DestinationConfiguration:
+        BucketARN: !Sub arn:aws:s3:::${BucketName}
+        RoleARN: !GetAtt FirehoseRole.Arn
+        # dt is the arrival day at Firehose (processing time), not the payment's day.
+        Prefix: "stream/payments/dt=!{timestamp:yyyy-MM-dd}/"
+        ErrorOutputPrefix: "stream/errors/!{firehose:error-output-type}/dt=!{timestamp:yyyy-MM-dd}/"
+        BufferingHints: { IntervalInSeconds: 60, SizeInMBs: 5 }
+        CompressionFormat: UNCOMPRESSED
+
+  # ---------- Alerts: Lambda on the stream -> SNS ----------
+  AlertTopic:
+    Type: AWS::SNS::Topic
+    Properties:
+      TopicName: lab8-payment-alerts
+
+  AlertSubscription:
+    Type: AWS::SNS::Subscription
+    Condition: HasEmail
+    Properties:
+      TopicArn: !Ref AlertTopic
+      Protocol: email
+      Endpoint: !Ref AlertEmail
+
+  AlertRole:
+    Type: AWS::IAM::Role
+    Properties:
+      AssumeRolePolicyDocument:
+        Version: "2012-10-17"
+        Statement:
+          - Effect: Allow
+            Principal: { Service: lambda.amazonaws.com }
+            Action: sts:AssumeRole
+      ManagedPolicyArns:
+        - arn:aws:iam::aws:policy/service-role/AWSLambdaKinesisExecutionRole
+      Policies:
+        - PolicyName: publish-alerts
+          PolicyDocument:
+            Version: "2012-10-17"
+            Statement:
+              - Effect: Allow
+                Action: sns:Publish
+                Resource: !Ref AlertTopic
+
+  AlertFunction:
+    Type: AWS::Lambda::Function
+    Properties:
+      FunctionName: lab8-failure-alert
+      Runtime: python3.12
+      Handler: index.handler
+      Timeout: 30
+      Role: !GetAtt AlertRole.Arn
+      Environment:
+        Variables:
+          TOPIC_ARN: !Ref AlertTopic
+          THRESHOLD: !Ref Threshold
+          MIN_COUNT: "20"
+      Code:
+        ZipFile: |
+          # Failure share per paymentMethod in each batch the stream hands us
+          # (batching window 60 s, so a batch is roughly one minute of processing time).
+          import base64, json, os
+          from collections import defaultdict
+          import boto3
+
+          sns = boto3.client("sns")
+          THRESHOLD = float(os.environ["THRESHOLD"])
+          MIN_COUNT = int(os.environ["MIN_COUNT"])
+
+          def handler(event, _ctx):
+              seen, counts = set(), defaultdict(lambda: [0, 0])
+              for r in event["Records"]:
+                  e = json.loads(base64.b64decode(r["kinesis"]["data"]))
+                  key = (e["invoiceId"], e["status"])
+                  if key in seen or e["status"] not in ("success", "failure"):
+                      continue
+                  seen.add(key)
+                  c = counts[e["paymentMethod"]]
+                  c[0] += 1
+                  c[1] += e["status"] == "failure"
+              summary = {m: f"{f}/{n}" for m, (n, f) in counts.items()}
+              print(json.dumps({"records": len(event["Records"]), "outcomes": summary}))
+              for method, (n, f) in counts.items():
+                  if n >= MIN_COUNT and f / n > THRESHOLD:
+                      msg = f"Failure share for {method}: {f / n:.1%} ({f}/{n}) > {THRESHOLD:.0%}"
+                      print("ALERT " + msg)
+                      sns.publish(TopicArn=os.environ["TOPIC_ARN"],
+                                  Subject=f"Payments alert: {method}", Message=msg)
+
+  AlertMapping:
+    Type: AWS::Lambda::EventSourceMapping
+    Properties:
+      EventSourceArn: !GetAtt Stream.Arn
+      FunctionName: !Ref AlertFunction
+      StartingPosition: LATEST
+      BatchSize: 5000
+      MaximumBatchingWindowInSeconds: 60
+
+  # ---------- Athena table over what Firehose wrote ----------
+  StreamTable:
+    Type: AWS::Glue::Table
+    Properties:
+      CatalogId: !Ref AWS::AccountId
+      DatabaseName: lab8
+      TableInput:
+        Name: stream_events
+        TableType: EXTERNAL_TABLE
+        Parameters:
+          classification: json
+          # Partition projection: no MSCK REPAIR / crawler needed for new days.
+          projection.enabled: "true"
+          projection.dt.type: date
+          projection.dt.format: yyyy-MM-dd
+          projection.dt.range: "2026-11-01,NOW"
+          storage.location.template: !Sub s3://${BucketName}/stream/payments/dt=${!dt}/
+        PartitionKeys:
+          - { Name: dt, Type: string }
+        StorageDescriptor:
+          Location: !Sub s3://${BucketName}/stream/payments/
+          InputFormat: org.apache.hadoop.mapred.TextInputFormat
+          OutputFormat: org.apache.hadoop.hive.ql.io.HiveIgnoreKeyTextOutputFormat
+          SerdeInfo:
+            SerializationLibrary: org.openx.data.jsonserde.JsonSerDe
+          Columns:
+            - { Name: invoiceid, Type: string }
+            - { Name: status, Type: string }
+            - { Name: failurereason, Type: string }
+            - { Name: amount, Type: bigint }
+            - { Name: finalamount, Type: bigint }
+            - { Name: ccy, Type: int }
+            - { Name: reference, Type: string }
+            - { Name: createddate, Type: string }
+            - { Name: modifieddate, Type: string }
+            - { Name: receivedat, Type: string }
+            - { Name: merchantid, Type: string }
+            - { Name: merchantname, Type: string }
+            - { Name: mcc, Type: int }
+            - { Name: customerid, Type: string }
+            - { Name: paymentmethod, Type: string }
+            - { Name: device, Type: string }
+            - { Name: sentat, Type: string }
+
+Outputs:
+  StreamName: { Value: !Ref Stream }
+  TopicArn: { Value: !Ref AlertTopic }

@@ -1,0 +1,11 @@
+GROUP        g-pair
+COORDINATOR  0
+STATE        Stable
+BALANCER     range
+MEMBERS      2
+TOTAL-LAG    205
+
+TOPIC     PARTITION  CURRENT-OFFSET  LOG-START-OFFSET  LOG-END-OFFSET  LAG   MEMBER-ID                                     CLIENT-ID  HOST
+payments  0          429             0                 534             105   rdkafka-5293252e-a745-4862-990b-c099734986f5  rdkafka    172.19.0.1
+payments  1          482             0                 556             74    rdkafka-5293252e-a745-4862-990b-c099734986f5  rdkafka    172.19.0.1
+payments  2          663             0                 689             26    rdkafka-8d5f1704-a3a2-4663-b59c-bc2839832f10  rdkafka    172.19.0.1

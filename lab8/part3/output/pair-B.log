@@ -1,0 +1,10 @@
+[B] assigned partitions [2]
+[B] ALERT 08:04 card: failure 18.2% (2/11) > 10%
+[B] ALERT 08:05 card: failure 12.5% (2/16) > 10%
+[B] ALERT 08:12 card: failure 16.7% (2/12) > 10%
+[B] ALERT 08:54 card: failure 30.0% (3/10) > 10%
+[B] ALERT 09:40 card: failure 18.2% (2/11) > 10%
+[B] ALERT 09:56 card: failure 40.0% (4/10) > 10%
+[B] revoked partitions [2]
+[B] summary: read 4215, duplicates dropped 37, late rejected 19, windows closed 122, open windows 3, alerts 6, seen-set size 4178
+[B] most late events in windows: 08:33=2, 09:04=2, 07:59=1, 08:05=1, 08:07=1

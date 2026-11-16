@@ -1,0 +1,22 @@
+[A] assigned partitions [0, 1, 2]
+[A] revoked partitions [0, 1, 2]
+[A] assigned partitions [0, 1]
+[A] ALERT 08:23 card: failure 13.6% (3/22) > 10%
+[A] ALERT 08:27 card: failure 17.6% (3/17) > 10%
+[A] ALERT 08:31 card: failure 18.2% (2/11) > 10%
+[A] ALERT 08:36 google_pay: failure 16.7% (2/12) > 10%
+[A] ALERT 08:39 card: failure 14.3% (2/14) > 10%
+[A] ALERT 08:43 card: failure 15.4% (2/13) > 10%
+[A] ALERT 08:44 card: failure 16.7% (2/12) > 10%
+[A] ALERT 08:51 card: failure 27.3% (3/11) > 10%
+[A] progress: read 5000, watermark 09:15:50, dups 55, late rejected 33
+[A] ALERT 09:14 card: failure 12.5% (2/16) > 10%
+[A] ALERT 09:25 card: failure 15.4% (2/13) > 10%
+[A] ALERT 09:31 card: failure 20.0% (2/10) > 10%
+[A] ALERT 09:39 card: failure 21.4% (3/14) > 10%
+[A] ALERT 09:43 card: failure 12.5% (2/16) > 10%
+[A] ALERT 09:46 card: failure 16.7% (2/12) > 10%
+[A] ALERT 09:54 card: failure 14.3% (2/14) > 10%
+[A] revoked partitions [0, 1]
+[A] summary: read 7785, duplicates dropped 84, late rejected 48, windows closed 123, open windows 3, alerts 15, seen-set size 7701
+[A] most late events in windows: 08:03=2, 08:18=2, 08:24=2, 08:22=2, 08:41=2

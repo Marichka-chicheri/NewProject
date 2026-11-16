@@ -1,0 +1,16 @@
+1794083476534	ALERT Failure share for qr: 12.5% (3/24) > 10%
+
+1794083595472	ALERT Failure share for card: 33.4% (216/647) > 10%
+
+1794083595709	ALERT Failure share for apple_pay: 29.3% (80/273) > 10%
+
+1794083595722	ALERT Failure share for google_pay: 31.7% (64/202) > 10%
+
+1794083595751	ALERT Failure share for qr: 47.6% (10/21) > 10%
+
+1794083655312	ALERT Failure share for card: 33.1% (172/520) > 10%
+
+1794083655520	ALERT Failure share for google_pay: 32.2% (59/183) > 10%
+
+1794083655552	ALERT Failure share for apple_pay: 31.1% (78/251) > 10%
+

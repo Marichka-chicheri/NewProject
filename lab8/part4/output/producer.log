@@ -1,0 +1,5 @@
+sent 2000/9000 events (61 ev/s), receivedAt=2026-10-01T08:18:48Z
+sent 4000/9000 events (61 ev/s), receivedAt=2026-10-01T08:38:16Z
+sent 6000/9000 events (61 ev/s), receivedAt=2026-10-01T08:57:03Z
+sent 8000/9000 events (61 ev/s), receivedAt=2026-10-01T09:18:26Z
+done: 9000 events in 149 s, 230 PutRecords calls, 0 records retried
