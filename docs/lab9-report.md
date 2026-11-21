@@ -13,7 +13,7 @@ configuration would be deployed, stopped and destroyed: [README → Deploy to Go
 
 | Required item (no-account route) | Where |
 |---|---|
-| `gcp/` Terraform + ADR | _link to the commit_ — [`gcp/`](../gcp), [`docs/adr/0008-gcp-port.md`](adr/0008-gcp-port.md) |
+| `gcp/` Terraform + ADR | [commit 28df7b1](https://github.com/Marichka-chicheri/NewProject/commit/28df7b1) — [`gcp/`](../gcp), [`docs/adr/0008-gcp-port.md`](adr/0008-gcp-port.md) |
 | `terraform init` + `terraform validate` output (no Google credentials) | [`docs/lab9/terraform-validate.txt`](lab9/terraform-validate.txt): both succeed for `gcp/` and `gcp/bootstrap/` |
 | The app as Cloud Run would run it, locally | [`docs/lab9/local-cloudrun-run.txt`](lab9/local-cloudrun-run.txt) (log, `curl /api/health`, tables) and the screenshot [`docs/lab9/frontend-local.png`](lab9/frontend-local.png) |
 | Part 3 cost table | [below](#part-3--cost) |
