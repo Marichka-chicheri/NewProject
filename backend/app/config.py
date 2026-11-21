@@ -13,8 +13,6 @@ class Settings(BaseSettings):
     # the URL. Cloud Run mounts the instance's Unix socket under /cloudsql and passes the password
     # from Secret Manager as DB_PASSWORD, so DATABASE_URL is built here instead of stored anywhere.
     cloud_sql_instance: str = ""
-    # Azure (azure/): host of the Database for PostgreSQL server, reached over TLS.
-    db_host: str = ""
     db_user: str = "meetings"
     db_name: str = "meetings"
     db_password: str = ""
@@ -55,16 +53,6 @@ class Settings(BaseSettings):
                 password=self.db_password,
                 database=self.db_name,
                 query={"host": f"/cloudsql/{self.cloud_sql_instance}"},
-            ).render_as_string(hide_password=False)
-        elif self.db_host:
-            self.database_url = URL.create(
-                "postgresql+asyncpg",
-                username=self.db_user,
-                password=self.db_password,
-                host=self.db_host,
-                port=5432,
-                database=self.db_name,
-                query={"ssl": "require"},
             ).render_as_string(hide_password=False)
         return self
 

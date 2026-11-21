@@ -1,51 +1,44 @@
-# Lab 9 — Spry on a second cloud: Azure (and the GCP design)
+# Lab 9 — Spry on a second cloud (Google Cloud design, no GCP account)
 
-**Note on the cloud.** Google Cloud would not start the Free Trial for my payment method without
-a $30 prepayment, so with the instructor's approval the "move the core to a second cloud" part is
-deployed on **Azure** (Azure for Students). The Google Cloud design is still done and kept:
-[`gcp/`](../gcp) and [ADR 0008](adr/0008-gcp-port.md) are the assignment as written (validated,
-not applied), [`azure/`](../azure) and [ADR 0009](adr/0009-azure-deployment.md) are what runs.
-Part 4 is GCP-specific and is done in the console where it needs no billing account.
+**Route taken: no Google Cloud account.** Google would not start the Free Trial for my payment
+method without a $30 prepayment, so I submit the "no GCP account" variant of the lab: the `gcp/`
+Terraform and ADR with `terraform init` / `validate` output, the Cloud Run image running locally
+next to PostgreSQL, the cost table, and the Part 4 demos without billing (Colab notebook and
+Looker Studio).
 
-The core of Spry (frontend, API, database) is described in Terraform next to the AWS deployment,
-not instead of it. Sign-in, the weekly report and the agenda parser stay on AWS. How to deploy,
-stop and destroy: [README → Deploy to Azure](../README.md#deploy-to-azure-lab-9).
+Sign-in, the weekly report and the agenda parser stay on AWS in the design. How the GCP
+configuration would be deployed, stopped and destroyed: [README → Deploy to Google Cloud](../README.md#deploy-to-google-cloud-lab-9-not-applied).
 
 ## Submission
 
-| Item | Where |
+| Required item (no-account route) | Where |
 |---|---|
-| Commit adding the Terraform + ADR | _link to the commit_ — [`azure/`](../azure), [`docs/adr/0009-azure-deployment.md`](adr/0009-azure-deployment.md); GCP: [`gcp/`](../gcp), [`docs/adr/0008-gcp-port.md`](adr/0008-gcp-port.md) |
-| URL of the project | `https://<name>.azurestaticapps.net` — _fill in after `azure/deploy.sh`_; DB check: `<api_url>/api/health` |
+| `gcp/` Terraform + ADR | _link to the commit_ — [`gcp/`](../gcp), [`docs/adr/0008-gcp-port.md`](adr/0008-gcp-port.md) |
+| `terraform init` + `terraform validate` output (no Google credentials) | [`docs/lab9/terraform-validate.txt`](lab9/terraform-validate.txt): both succeed for `gcp/` and `gcp/bootstrap/` |
+| The app as Cloud Run would run it, locally | [`docs/lab9/local-cloudrun-run.txt`](lab9/local-cloudrun-run.txt) (log, `curl /api/health`, tables) and the screenshot [`docs/lab9/frontend-local.png`](lab9/frontend-local.png) |
 | Part 3 cost table | [below](#part-3--cost) |
-| Part 4 screenshots | [`docs/lab9/`](lab9/) — BigQuery query, Looker Studio chart, Vision/Document AI OCR (_to add_) |
-| Clean-up | [checklist](#clean-up) |
+| Part 4 demos without billing | [Colab notebook copy](https://colab.research.google.com/drive/1i2_7bhfAlwZmi_PCtzRCW1vttD1IPgwX?usp=sharing) and [Looker Studio dashboard](https://datastudio.google.com/reporting/3ba08407-7ad0-4c3f-a45d-4b6a051fedb8) |
+| Three sentences (Markdown vs image, timings, when to pay for Document AI) | [Part 4](#part-4--ai-services-and-the-data-stack) (written) |
 
-### What has to be done by hand
+### Local run, as Cloud Run runs it
 
-The Terraform for both clouds is written and `terraform validate` passes (`azure/`, `gcp/`,
-`gcp/bootstrap/`); the backend image was built and run locally. Nothing is applied: neither
-`az` nor `gcloud` is installed on this laptop, and creating the database costs money.
+```bash
+docker network create spry-lab9
+docker run -d --name spry-pg --network spry-lab9 -e POSTGRES_USER=meetings -e POSTGRES_PASSWORD=meetings -e POSTGRES_DB=meetings postgres:17
+docker build --target app -t spry-backend:cloudrun backend
+docker run -d --name spry-api-8080 --network spry-lab9 -e PORT=8080   -e DATABASE_URL=postgresql+asyncpg://meetings:meetings@spry-pg:5432/meetings   -p 8080:8080 spry-backend:cloudrun
+cd frontend && VITE_API_PROXY=http://localhost:8080 npm run dev     # http://localhost:5173
+```
 
-1. **Azure for Students** (university e-mail, no card). **Budget:** Cost Management → Budgets →
-   $5/month, alerts at 50 / 90 / 100 %.
-2. Install the **Azure CLI**, `az login`, put the subscription id into
-   [`azure/terraform.tfvars`](../azure/terraform.tfvars), check the regions the subscription allows
-   and set `location`.
-3. Register the resource providers once (README step 3).
-4. Create the HCP Terraform workspace `new-project-azure` (CLI-driven, execution mode *Local*),
-   `cd azure && terraform init && terraform apply`.
-5. `bash azure/deploy.sh`.
-6. Add the Static Web Apps address to `app_urls` in `infra/terraform.tfvars` (pull request) so
-   sign-in works there; open the app in a private window, check the meetings page; screenshot.
-7. **Part 4 demos** (GCP console, free where possible), screenshots into `docs/lab9/`: a BigQuery
-   query with bytes processed, a Looker Studio chart over a BigQuery result, one Vision or
-   Document AI OCR result (these two may ask for billing; if so, say so here).
-8. **Clean up** (below), especially the **PostgreSQL server**: it bills every hour it exists.
+The image (default target, no Lambda Web Adapter: `/opt/extensions` does not exist) listens on
+`$PORT`, runs the Alembic migrations on start and answers `GET /api/health` with `{"status":"ok"}`
+after a `SELECT 1` on PostgreSQL. Through the Vite proxy the browser reaches the same API on one
+origin, the way Firebase Hosting's `/api/**` rewrite would. The meetings page itself needs a
+Cognito sign-in (sign-in stays on AWS), so the database-reading call shown is `/api/health`.
 
 ---
 
-## Part 0 — Project and identity (GCP design; Azure equivalent below)
+## Part 0 — Project and identity
 
 - **Two service accounts, no keys.** `spry-terraform` applies `gcp/` with Cloud Run Admin, Cloud
   SQL Admin, Artifact Registry Administrator, Secret Manager Admin, Service Usage Admin, Service
@@ -63,18 +56,10 @@ The Terraform for both clouds is written and `terraform validate` passes (`azure
   Cloud Run, Cloud SQL Admin, Secret Manager, Artifact Registry, Firebase, Firebase Hosting, Logging
   in `gcp/`.
 
-**Azure (what runs).** No keys either: Terraform uses `az login`; the API runs as a
-user-assigned managed identity (`id-spry-api`) with `AcrPull` on the registry and
-`Key Vault Secrets User` on one vault; the database password is generated by Terraform, written
-to Key Vault and read by the app through a Key Vault reference. The one token that leaves Azure is
-the Static Web Apps deployment token, read for one upload by `azure/deploy.sh`.
-
 ## Part 1 — Mapping
 
-The full tables (keep/replace/drop each row) and the three answers — database, e-mail provider
-and its key, features not moved — are in [ADR 0008](adr/0008-gcp-port.md) (GCP, 16 rows) and
-[ADR 0009](adr/0009-azure-deployment.md) (Azure, same rows with the Azure service beside the GCP
-one). In short:
+The full table (16 rows, keep/replace/drop each) and the three answers — database, e-mail
+provider and its key, features not moved — are in [ADR 0008](adr/0008-gcp-port.md). In short:
 
 - **Database:** Cloud SQL PostgreSQL 17 `db-f1-micro`, stopped between demos. Firestore would
   bring the bill to $0 but is a rewrite; Aurora cross-cloud costs latency (~30 ms per round trip),
@@ -87,11 +72,7 @@ one). In short:
 
 ## Part 2 — Moving the core
 
-**Azure (deployed):** [`azure/versions.tf`](../azure/versions.tf) (workspace `new-project-azure`),
-[`main.tf`](../azure/main.tf) (resource group, registry, Key Vault, identity, Static Web App),
-[`database.tf`](../azure/database.tf) (PostgreSQL Flexible Server B1ms, 32 GiB, password in Key
-Vault), [`api.tf`](../azure/api.tf) (Container App: own identity, DB + secret, min replicas 0),
-[`deploy.sh`](../azure/deploy.sh). **GCP (written, not applied):**
+**GCP (written and validated, not applied):**
 
 | Step | Done in |
 |---|---|
@@ -107,15 +88,7 @@ Notes on the changes:
   (`app`) is a plain container: `uvicorn --port ${PORT}` (8000 by default, 8080 on Cloud Run). The
   `lambda` target adds the Lambda Web Adapter extension and is built only by
   `infra/deploy-backend.sh` (`--target lambda`). The app never used Mangum.
-- **Database URL (Azure).** `app/config.py` builds the URL (with `ssl=require`) from `DB_HOST`,
-  `DB_NAME`, `DB_USER`, `DB_PASSWORD`; on GCP from the Cloud SQL socket (`CLOUD_SQL_INSTANCE`).
-  Locally and on AWS nothing changes (`DATABASE_URL`). The Azure database is reachable only over
-  TLS with a random password, through Azure's "allow Azure services" firewall rule: a known
-  weakness, described in ADR 0009.
-- **Frontend and CORS (Azure).** The Free Static Web Apps plan cannot proxy `/api/**` to a
-  Container App, so the bundle gets `VITE_API_URL` and the API allows the site's origin. On GCP,
-  Firebase Hosting rewrites `/api/**` and no CORS is needed.
-- **Database URL (GCP).** Cloud Run mounts the Cloud SQL socket at `/cloudsql/<connection name>` and
+- **Database URL.** Cloud Run mounts the Cloud SQL socket at `/cloudsql/<connection name>` and
   passes the Secret Manager password as `DB_PASSWORD`; `app/config.py` builds
   `postgresql+asyncpg://meetings:…@/meetings?host=/cloudsql/…` from `CLOUD_SQL_INSTANCE`,
   `DB_USER`, `DB_NAME`, `DB_PASSWORD`. Locally and on AWS nothing changes (`DATABASE_URL`).
@@ -193,18 +166,36 @@ hides in three settings that look harmless:
 
 ## Part 4 — AI services and the data stack
 
-Screenshots go to [`docs/lab9/`](lab9/) (to add):
+Without a Google Cloud account, the demos run without billing:
 
-| Demo | What to capture | File |
-|---|---|---|
-| Vision API OCR (1,000 units free) or Document AI OCR (1,000 pages free) | the extracted text of a handwritten page or a receipt | `docs/lab9/ocr.png` |
-| Document AI Form Parser on one PDF (optional, $30/1k pages) | key-value pairs | `docs/lab9/form-parser.png` |
-| Gemini in Vertex AI Studio | the Lab 6 agenda prompt ([`backend/app/ai/`](../backend/app/ai)) and its JSON | `docs/lab9/vertex-agenda.png` |
-| BigQuery | a query over a public dataset with **bytes processed** visible | `docs/lab9/bigquery.png` |
-| Dataflow (optional) | *Cloud Storage Text to BigQuery* template on a small file | `docs/lab9/dataflow.png` |
-| Looker Studio | a chart over the BigQuery result | `docs/lab9/looker-studio.png` |
+| Assignment demo | What I run instead |
+|---|---|
+| BigQuery query + bytes processed | SQL over a public dataset with DuckDB in the Colab notebook |
+| Vision API OCR | Tesseract and EasyOCR in the notebook |
+| Document AI | a scanned invoice → Markdown by an open vision-language model (Qwen3-VL 2B via Ollama) |
+| Gemini prompt in Vertex AI Studio | my own prompt turning the invoice into JSON, run on the Markdown and on the image, checked against the right answer |
+| Looker Studio chart | public dashboard over `owid-co2-data.csv` (needs only a Google account) |
 
-A BigQuery query that stays far inside the 1 TiB free tier (BigQuery sandbox, no card needed):
+Notebook copy: <https://colab.research.google.com/drive/1i2_7bhfAlwZmi_PCtzRCW1vttD1IPgwX?usp=sharing>. Dashboard: <https://datastudio.google.com/reporting/3ba08407-7ad0-4c3f-a45d-4b6a051fedb8>.
+
+**One thing I noticed in the data:** Ukraine's CO₂ emissions peak at about 730 million tonnes around 1990 and fall to about 140 by the 2020s, while Switzerland and Ireland stay below 50 throughout.
+
+**Three sentences.**
+
+1. Neither input worked better: the Markdown (A) and the image (B) both matched 8 of 9 fields, and
+   both missed the same one, `seller`, where the model wrote "Kozelnyska St" instead of
+   "Kozelnytska St" — it dropped a letter of an unusual street name while copying it, so the limit
+   was the small model's copying, not what it was given (the Markdown parse of the page was already
+   correct enough for everything else).
+2. Section 4 (the page to Markdown) took 32 s and each answer in section 5 took 3 s, on a Tesla T4
+   GPU in Colab (the same result is expected on CPU, in about 5 min and 1.5–2 min).
+3. I would pay for Document AI when the volume is high or the answer must be identical and
+   checkable every time — thousands of invoices, tables that span pages, bounding boxes and
+   confidence per field, an SLA — and keep the open model for a few documents with a good prompt
+   (the model here misspelled a street name, which a trained invoice processor would not); I would
+   also use the open model when documents are not allowed to leave my own machines.
+
+The BigQuery version of the DuckDB query, for reference:
 
 ```sql
 -- ~ 100–200 MB processed: only two columns of one table are read.
@@ -255,11 +246,10 @@ Data Engineer. The AWS counterparts are Cloud Practitioner → Solutions Archite
 
 ## Clean up
 
-- [ ] **Cloud SQL:** `cd gcp && terraform destroy` (deletes the instance, Cloud Run, the registry,
-      the secret and the Hosting site). Stopping is not enough: a stopped instance still bills
-      its 10 GB SSD.
-- [ ] `cd gcp/bootstrap && terraform destroy` (service accounts, WIF pool — free, but tidy).
-- [ ] Delete the Dataflow output, the temp/staging bucket and any BigQuery datasets/tables you
-      created; Document AI processors you created.
-- [ ] Remove `https://<project_id>.web.app` from `app_urls` in `infra/terraform.tfvars`.
-- [ ] A day later: **Billing → Reports**, filter by project, check it is flat at $0.
+Nothing was created on Google Cloud, so there is nothing to bill. Locally:
+
+- [ ] `docker rm -f spry-api-8080 spry-pg && docker network rm spry-lab9`, stop the Vite server.
+- [ ] If the GCP configuration is ever applied: `cd gcp && terraform destroy` (a stopped Cloud SQL
+      instance still bills its 10 GB SSD; a deleted one bills nothing), then
+      `cd gcp/bootstrap && terraform destroy`, delete Dataflow output and BigQuery tables, and
+      check Billing → Reports a day later.

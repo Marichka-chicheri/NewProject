@@ -1,0 +1,26 @@
+$ docker run -e PORT=8080 -p 8080:8080 spry-backend:cloudrun   (next to postgres:17, no Lambda adapter)
+INFO  [alembic.runtime.migration] Will assume transactional DDL.
+INFO  [alembic.runtime.migration] Running upgrade  -> 0001, initial schema
+INFO  [alembic.runtime.migration] Running upgrade 0001 -> 0002, users, and an owner for every meeting
+INFO  [alembic.runtime.migration] Running upgrade 0002 -> 0003, agenda and the parser's suggestion on meetings
+INFO:     Started server process [1]
+INFO:     Waiting for application startup.
+INFO:     Application startup complete.
+INFO:     Uvicorn running on http://0.0.0.0:8080 (Press CTRL+C to quit)
+
+$ curl -i http://localhost:8080/api/health
+HTTP/1.1 200 OK
+{"status":"ok"}
+$ docker exec spry-pg psql -U meetings -c "\dt"
+                List of relations
+ Schema |         Name         | Type  |  Owner   
+--------+----------------------+-------+----------
+ public | alembic_version      | table | meetings
+ public | meeting_participants | table | meetings
+ public | meetings             | table | meetings
+ public | participants         | table | meetings
+ public | users                | table | meetings
+(5 rows)
+
+$ ls /opt/extensions in the image
+ls: cannot access '/opt/extensions': No such file or directory

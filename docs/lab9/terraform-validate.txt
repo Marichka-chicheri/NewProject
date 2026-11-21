@@ -1,0 +1,32 @@
+$ cd gcp && terraform init -backend=false
+Initializing provider plugins...
+- Reusing previous version of hashicorp/google from the dependency lock file
+- Reusing previous version of hashicorp/google-beta from the dependency lock file
+- Reusing previous version of hashicorp/random from the dependency lock file
+- Installing hashicorp/google-beta v7.46.2...
+- Installed hashicorp/google-beta v7.46.2 (signed by HashiCorp)
+- Installing hashicorp/random v3.9.1...
+- Installed hashicorp/random v3.9.1 (signed by HashiCorp)
+- Installing hashicorp/google v7.46.2...
+- Installed hashicorp/google v7.46.2 (signed by HashiCorp)
+
+Terraform has been successfully initialized!
+
+You may now begin working with Terraform. Try running "terraform plan" to see
+any changes that are required for your infrastructure. All Terraform commands
+should now work.
+
+If you ever set or change modules or backend configuration for Terraform,
+rerun this command to reinitialize your working directory. If you forget, other
+commands will detect it and remind you to do so if necessary.
+
+$ terraform validate
+Success! The configuration is valid.
+
+
+$ cd gcp/bootstrap && terraform init && terraform validate
+If you ever set or change modules or backend configuration for Terraform,
+rerun this command to reinitialize your working directory. If you forget, other
+commands will detect it and remind you to do so if necessary.
+Success! The configuration is valid.
+
